@@ -814,8 +814,6 @@ float interpolateKneeAngle(float t) {
 
 void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
-
-
 	// Command motor 1 and read current CAN message
 	if (motorActivated1) {
 		CAN1_Tx_send_to_motor(motorID1, -rAngle1, 0, Kp1, Kd1, 0); //position mode
