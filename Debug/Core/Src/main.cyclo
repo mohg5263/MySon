@@ -15,6 +15,6 @@
 ../Core/Src/main.c:782:7:interpolateHipAngle	3
 ../Core/Src/main.c:798:7:interpolateKneeAngle	3
 ../Core/Src/main.c:815:6:signalMotors	5
-../Core/Src/main.c:882:6:HAL_TIM_PeriodElapsedCallback	15
-../Core/Src/main.c:1124:6:Stop_Motors	5
-../Core/Src/main.c:1146:6:Error_Handler	1
+../Core/Src/main.c:880:6:HAL_TIM_PeriodElapsedCallback	15
+../Core/Src/main.c:1122:6:Stop_Motors	5
+../Core/Src/main.c:1144:6:Error_Handler	1

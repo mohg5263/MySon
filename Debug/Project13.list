@@ -39,13 +39,13 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, READONLY, DEBUGGING, OCTETS
  17 .debug_line   00012d3e  00000000  00000000  00049c4c  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 18 .debug_str    000f7767  00000000  00000000  0005c98a  2**0
+ 18 .debug_str    000f76d0  00000000  00000000  0005c98a  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 19 .comment      00000043  00000000  00000000  001540f1  2**0
+ 19 .comment      00000043  00000000  00000000  0015405a  2**0
                   CONTENTS, READONLY
- 20 .debug_frame  00005980  00000000  00000000  00154134  2**2
+ 20 .debug_frame  00005980  00000000  00000000  001540a0  2**2
                   CONTENTS, READONLY, DEBUGGING, OCTETS
- 21 .debug_line_str 000000bf  00000000  00000000  00159ab4  2**0
+ 21 .debug_line_str 000000b4  00000000  00000000  00159a20  2**0
                   CONTENTS, READONLY, DEBUGGING, OCTETS
 
 Disassembly of section .text:
@@ -2889,8 +2889,6 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
  8001a7e:	edc7 0a02 	vstr	s1, [r7, #8]
  8001a82:	ed87 1a01 	vstr	s2, [r7, #4]
  8001a86:	edc7 1a00 	vstr	s3, [r7]
-
-
 
 	// Command motor 1 and read current CAN message
 	if (motorActivated1) {
