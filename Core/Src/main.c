@@ -100,8 +100,10 @@ uint32_t TxMailbox;	//data type dictated by HAL
 int cycle;
 
 int stage=0;
+int stageR=0;
 
 int heelSwitch=0;
+int heelSwitchR=0;
 
 //Receiving parameter variables
 //for motor 1
@@ -146,11 +148,15 @@ float rAngle4=0;
 uint8_t buttonState = 0;
 uint8_t lastButtonState = 0;
 
-// Hard-coded time and angle data
-#define NUM_DATA_POINTS 101 // Number of data points
-const float time[NUM_DATA_POINTS] = { 0.2, 0.6, 1.1, 1.7, 2.0 };
-const float hipAngle[NUM_DATA_POINTS] = { 17.92, 1.37, -14.98, 19.17, 16.83 };
-const float kneeAngle[NUM_DATA_POINTS] = { 16.57, 12.16, 7.58, 51.51, 2.2 };
+//switch status
+uint8_t buttonStateR = 0;
+uint8_t lastButtonStateR = 0;
+
+//switch status
+uint8_t buttonStateL = 0;
+uint8_t lastButtonStateL = 0;
+
+
 
 // PID variables
 int motorID1 = 1;
@@ -247,37 +253,38 @@ float uint_to_float(int x_int, float x_min, float x_max, int bits) {
 /* USER CODE END 0 */
 
 /**
- * @brief  The application entry point.
- * @retval int
- */
-int main(void) {
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
 
-	/* USER CODE BEGIN 1 */
+  /* USER CODE BEGIN 1 */
 
-	/* USER CODE END 1 */
+  /* USER CODE END 1 */
 
-	/* MCU Configuration--------------------------------------------------------*/
+  /* MCU Configuration--------------------------------------------------------*/
 
-	/* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-	HAL_Init();
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
 
-	/* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 
-	/* USER CODE END Init */
+  /* USER CODE END Init */
 
-	/* Configure the system clock */
-	SystemClock_Config();
+  /* Configure the system clock */
+  SystemClock_Config();
 
-	/* USER CODE BEGIN SysInit */
+  /* USER CODE BEGIN SysInit */
 
-	/* USER CODE END SysInit */
+  /* USER CODE END SysInit */
 
-	/* Initialize all configured peripherals */
-	MX_GPIO_Init();
-	MX_USART2_UART_Init();
-	MX_CAN1_Init();
-	MX_TIM6_Init();
-	/* USER CODE BEGIN 2 */
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_USART2_UART_Init();
+  MX_CAN1_Init();
+  MX_TIM6_Init();
+  /* USER CODE BEGIN 2 */
 	if (HAL_CAN_Start(&hcan1) != HAL_OK) //CAN is started and checked for error.
 			{
 		Error_Handler();
@@ -324,93 +331,98 @@ int main(void) {
 
 	cycle = 0;
 
-	/* USER CODE END 2 */
+  /* USER CODE END 2 */
 
-	/* Infinite loop */
-	/* USER CODE BEGIN WHILE */
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
 	while (1) {
-		/* USER CODE END WHILE */
+    /* USER CODE END WHILE */
 
-		/* USER CODE BEGIN 3 */
+    /* USER CODE BEGIN 3 */
 	}
-	/* USER CODE END 3 */
+  /* USER CODE END 3 */
 }
 
 /**
- * @brief System Clock Configuration
- * @retval None
- */
-void SystemClock_Config(void) {
-	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
-	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
 
-	/** Configure the main internal regulator output voltage
-	 */
-	if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1)
-			!= HAL_OK) {
-		Error_Handler();
-	}
+  /** Configure the main internal regulator output voltage
+  */
+  if (HAL_PWREx_ControlVoltageScaling(PWR_REGULATOR_VOLTAGE_SCALE1) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
-	/** Initializes the RCC Oscillators according to the specified parameters
-	 * in the RCC_OscInitTypeDef structure.
-	 */
-	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
-	RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
-	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
-	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
-	RCC_OscInitStruct.PLL.PLLM = 1;
-	RCC_OscInitStruct.PLL.PLLN = 20;
-	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
-	RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
-	RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
-	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
-		Error_Handler();
-	}
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_BYPASS;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 1;
+  RCC_OscInitStruct.PLL.PLLN = 20;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV7;
+  RCC_OscInitStruct.PLL.PLLQ = RCC_PLLQ_DIV2;
+  RCC_OscInitStruct.PLL.PLLR = RCC_PLLR_DIV2;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
 
-	/** Initializes the CPU, AHB and APB buses clocks
-	 */
-	RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK | RCC_CLOCKTYPE_SYSCLK
-			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
-	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
-	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK) {
-		Error_Handler();
-	}
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_4) != HAL_OK)
+  {
+    Error_Handler();
+  }
 }
 
 /**
- * @brief CAN1 Initialization Function
- * @param None
- * @retval None
- */
-static void MX_CAN1_Init(void) {
+  * @brief CAN1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_CAN1_Init(void)
+{
 
-	/* USER CODE BEGIN CAN1_Init 0 */
+  /* USER CODE BEGIN CAN1_Init 0 */
 
-	/* USER CODE END CAN1_Init 0 */
+  /* USER CODE END CAN1_Init 0 */
 
-	/* USER CODE BEGIN CAN1_Init 1 */
+  /* USER CODE BEGIN CAN1_Init 1 */
 
-	/* USER CODE END CAN1_Init 1 */
-	hcan1.Instance = CAN1;
-	hcan1.Init.Prescaler = 5;
-	hcan1.Init.Mode = CAN_MODE_NORMAL;
-	hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
-	hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
-	hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
-	hcan1.Init.TimeTriggeredMode = DISABLE;
-	hcan1.Init.AutoBusOff = ENABLE;
-	hcan1.Init.AutoWakeUp = DISABLE;
-	hcan1.Init.AutoRetransmission = ENABLE;
-	hcan1.Init.ReceiveFifoLocked = DISABLE;
-	hcan1.Init.TransmitFifoPriority = DISABLE;
-	if (HAL_CAN_Init(&hcan1) != HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN CAN1_Init 2 */
+  /* USER CODE END CAN1_Init 1 */
+  hcan1.Instance = CAN1;
+  hcan1.Init.Prescaler = 5;
+  hcan1.Init.Mode = CAN_MODE_NORMAL;
+  hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
+  hcan1.Init.TimeSeg1 = CAN_BS1_13TQ;
+  hcan1.Init.TimeSeg2 = CAN_BS2_2TQ;
+  hcan1.Init.TimeTriggeredMode = DISABLE;
+  hcan1.Init.AutoBusOff = ENABLE;
+  hcan1.Init.AutoWakeUp = DISABLE;
+  hcan1.Init.AutoRetransmission = ENABLE;
+  hcan1.Init.ReceiveFifoLocked = DISABLE;
+  hcan1.Init.TransmitFifoPriority = DISABLE;
+  if (HAL_CAN_Init(&hcan1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN CAN1_Init 2 */
 
 	//This is the CAN filter configuration (part of the CAN_INIT code)
 	CAN_FilterTypeDef canfilterconfig;
@@ -429,135 +441,138 @@ static void MX_CAN1_Init(void) {
 	if (HAL_CAN_ConfigFilter(&hcan1, &canfilterconfig) != HAL_OK) {
 		Error_Handler();
 	}
-	/* USER CODE END CAN1_Init 2 */
+  /* USER CODE END CAN1_Init 2 */
 
 }
 
 /**
- * @brief TIM6 Initialization Function
- * @param None
- * @retval None
- */
-static void MX_TIM6_Init(void) {
+  * @brief TIM6 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM6_Init(void)
+{
 
-	/* USER CODE BEGIN TIM6_Init 0 */
+  /* USER CODE BEGIN TIM6_Init 0 */
 
-	/* USER CODE END TIM6_Init 0 */
+  /* USER CODE END TIM6_Init 0 */
 
-	TIM_MasterConfigTypeDef sMasterConfig = { 0 };
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
 
-	/* USER CODE BEGIN TIM6_Init 1 */
+  /* USER CODE BEGIN TIM6_Init 1 */
 
-	/* USER CODE END TIM6_Init 1 */
-	htim6.Instance = TIM6;
-	htim6.Init.Prescaler = 100 - 1;
-	htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-	htim6.Init.Period = 1600 - 1;
-	htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
-	if (HAL_TIM_Base_Init(&htim6) != HAL_OK) {
-		Error_Handler();
-	}
-	sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
-	sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
-	if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig)
-			!= HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN TIM6_Init 2 */
+  /* USER CODE END TIM6_Init 1 */
+  htim6.Instance = TIM6;
+  htim6.Init.Prescaler = 100-1;
+  htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim6.Init.Period = 2400-1;
+  htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim6, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM6_Init 2 */
 
-	/* USER CODE END TIM6_Init 2 */
-
-}
-
-/**
- * @brief USART2 Initialization Function
- * @param None
- * @retval None
- */
-static void MX_USART2_UART_Init(void) {
-
-	/* USER CODE BEGIN USART2_Init 0 */
-
-	/* USER CODE END USART2_Init 0 */
-
-	/* USER CODE BEGIN USART2_Init 1 */
-
-	/* USER CODE END USART2_Init 1 */
-	huart2.Instance = USART2;
-	huart2.Init.BaudRate = 115200;
-	huart2.Init.WordLength = UART_WORDLENGTH_8B;
-	huart2.Init.StopBits = UART_STOPBITS_1;
-	huart2.Init.Parity = UART_PARITY_NONE;
-	huart2.Init.Mode = UART_MODE_TX_RX;
-	huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-	huart2.Init.OverSampling = UART_OVERSAMPLING_16;
-	huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-	huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-	if (HAL_UART_Init(&huart2) != HAL_OK) {
-		Error_Handler();
-	}
-	/* USER CODE BEGIN USART2_Init 2 */
-
-	/* USER CODE END USART2_Init 2 */
+  /* USER CODE END TIM6_Init 2 */
 
 }
 
 /**
- * @brief GPIO Initialization Function
- * @param None
- * @retval None
- */
-static void MX_GPIO_Init(void) {
-	GPIO_InitTypeDef GPIO_InitStruct = { 0 };
-	/* USER CODE BEGIN MX_GPIO_Init_1 */
-	/* USER CODE END MX_GPIO_Init_1 */
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
 
-	/* GPIO Ports Clock Enable */
-	__HAL_RCC_GPIOC_CLK_ENABLE();
-	__HAL_RCC_GPIOH_CLK_ENABLE();
-	__HAL_RCC_GPIOA_CLK_ENABLE();
-	__HAL_RCC_GPIOB_CLK_ENABLE();
+  /* USER CODE BEGIN USART2_Init 0 */
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
+  /* USER CODE END USART2_Init 0 */
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, LD2_Pin | GPIO_PIN_6 | GPIO_PIN_7, GPIO_PIN_RESET);
+  /* USER CODE BEGIN USART2_Init 1 */
 
-	/*Configure GPIO pin : B1_Pin */
-	GPIO_InitStruct.Pin = B1_Pin;
-	GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+  huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
 
-	/*Configure GPIO pin : PC0 */
-	GPIO_InitStruct.Pin = GPIO_PIN_0;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  /* USER CODE END USART2_Init 2 */
 
-	/*Configure GPIO pins : LD2_Pin PA6 PA7 */
-	GPIO_InitStruct.Pin = LD2_Pin | GPIO_PIN_6 | GPIO_PIN_7;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+}
 
-	/*Configure GPIO pin : PC12 */
-	GPIO_InitStruct.Pin = GPIO_PIN_12;
-	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+/* USER CODE BEGIN MX_GPIO_Init_1 */
+/* USER CODE END MX_GPIO_Init_1 */
 
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOH_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
 
-	/* EXTI interrupt init*/
-	HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
-	HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
 
-	/* USER CODE BEGIN MX_GPIO_Init_2 */
-	/* USER CODE END MX_GPIO_Init_2 */
+  /*Configure GPIO pin : B1_Pin */
+  GPIO_InitStruct.Pin = B1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PC0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : LD2_Pin PA6 PA7 */
+  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_6|GPIO_PIN_7;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PC10 PC11 PC12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
+/* USER CODE BEGIN MX_GPIO_Init_2 */
+/* USER CODE END MX_GPIO_Init_2 */
 }
 
 /* USER CODE BEGIN 4 */
@@ -778,39 +793,6 @@ void CAN1_Rx_message_read(void) {
 
 }
 
-// Function to interpolate angle based on given time
-float interpolateHipAngle(float t) {
-	// Find the two closest time points
-	int i = 0;
-	while (time[i] < t && i < NUM_DATA_POINTS - 1) {
-		i++;
-	}
-
-	// Linear interpolation
-	float angle_interp = hipAngle[i - 1]
-			+ (hipAngle[i] - hipAngle[i - 1]) * (t - time[i - 1])
-					/ (time[i] - time[i - 1]);
-
-	return angle_interp;
-}
-
-// Function to interpolate angle based on given time
-float interpolateKneeAngle(float t) {
-	// Find the two closest time points
-	int i = 0;
-	while (time[i] < t && i < NUM_DATA_POINTS - 1) {
-		i++;
-	}
-
-	// Linear interpolation
-	float angle_interp = kneeAngle[i - 1]
-			+ (kneeAngle[i] - kneeAngle[i - 1]) * (t - time[i - 1])
-					/ (time[i] - time[i - 1]);
-
-	return angle_interp;
-}
-
-
 
 void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
@@ -840,31 +822,31 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 	// Command motor 1 and read current CAN message
 	if (motorActivated3) {
-		CAN1_Tx_send_to_motor(motorID3, -rAngle3, 0, 1, 0.5, 0); //position mode
+		CAN1_Tx_send_to_motor(motorID3, rAngle3, 0, Kp3, Kd3, 0); //position mode
 	} else {
 		CAN1_Tx_send_to_motor(motorID3, 0, 0, 0, 0, 0);
 	}
 
 	CAN1_Rx_message_read();
-	posF3 = position_3;
+	posF3 = position_3  * 180.0 / M_PI / 65 * 12;
 	speedF3 = velocity_3;
 	torqueF3 = torque_3;
 
 	// Command motor 1 and read current CAN message
 	if (motorActivated4) {
-		CAN1_Tx_send_to_motor(motorID4, -rAngle4, 0, 1, 0.5, 0); //position mode
+		CAN1_Tx_send_to_motor(motorID4, rAngle4, 0, Kp4, Kd4, 0); //position mode
 	} else {
 		CAN1_Tx_send_to_motor(motorID4, 0, 0, 0, 0, 0);
 	}
 
 	CAN1_Rx_message_read();
-	posF4 = position_4;
+	posF4 = position_4 * 180.0 / M_PI / 65 * 12;
 	speedF4 = velocity_4;
 	torqueF4 = torque_4;
 
 
-	char msg[50];
-	sprintf(msg, "Stage: %d, Hip: %.2f, Knee: %.2f\r\n", stage, posF1, posF2);
+	char msg[100];
+	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", stageR, posF3, posF4, stage, posF1, posF2);
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
@@ -886,6 +868,50 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonState == GPIO_PIN_SET && lastButtonState == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+//		if (heelSwitch==0 || heelSwitch==1) {
+//		heelSwitch=heelSwitch+1;
+//		char msg[50];
+//		sprintf(msg, "Heel Switch Trigerred!" );
+//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+//		}
+
+	}
+
+	lastButtonState = buttonState;
+
+
+
+
+
+	static uint8_t lastButtonStateR = GPIO_PIN_RESET; // Initially not pressed
+
+	uint8_t buttonStateR = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10);
+
+	if (buttonStateR == GPIO_PIN_SET && lastButtonStateR == GPIO_PIN_RESET) {
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+		if (heelSwitchR==0 || heelSwitchR==1) {
+		heelSwitchR=heelSwitchR+1;
+		char msg[50];
+		sprintf(msg, "Heel Switch Right Trigerred!" );
+		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+		}
+
+	}
+
+	lastButtonStateR = buttonStateR;
+
+
+
+
+
+
+
+	static uint8_t lastButtonStateL = GPIO_PIN_RESET; // Initially not pressed
+
+	uint8_t buttonStateL = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11);
+
+	if (buttonStateL == GPIO_PIN_SET && lastButtonStateL == GPIO_PIN_RESET) {
+		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 		if (heelSwitch==0 || heelSwitch==1) {
 		heelSwitch=heelSwitch+1;
 		char msg[50];
@@ -893,34 +919,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		}
 
-
 	}
 
-	lastButtonState = buttonState;
+	lastButtonStateL = buttonStateL;
+
+
+
 
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 	ttime = cycle * samplingTime * 1e-3;
-
-	if (ttime < 2) {
-		ttime1 = ttime;
-		ttime2 = ttime + 1;
-	} else {
-		ttime1 = fmod(ttime, 2);
-		ttime2 = fmod(ttime + 1, 2);
-	}
-
-
-
-	const float time[NUM_DATA_POINTS] = {          0, 0.54,   1.06, 1.42 };
-	const float hipAngle[NUM_DATA_POINTS] = {  24.28, 0.32, -23.22, 5.89 };
-	const float kneeAngle[NUM_DATA_POINTS] = { 10.06, 16.17, 20.69, 68.21 };
-
-
-
-	rAngle3 = 0 / 180.0 * M_PI * 65 / 12;
-	rAngle4 = 0 / 180.0 * M_PI * 65 / 12;
-
-	float epsilon=3;
 
 
 
@@ -948,7 +955,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kd2=0.3;
 
 		rAngle1 = -5 / 180.0 * M_PI * 65 / 12;
-//		rAngle2 = 20  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
 
 		stage=2;
@@ -1021,94 +1027,111 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		}
 	}
 
-//	else if (heelSwitch==6) {
-//
-////		Kp1=1;
-////		Kd1=0.5;
-////
-////		Kp2=1;
-////		Kd2=0.3;
-////
-////		rAngle1 = 30 / 180.0 * M_PI * 65 / 12;
-////		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
-//
-//
-//		heelSwitch=1;
-//
-////		if(posF1>10){
-////			stage=5;
-////			heelSwitch=1;
-////		}
-//	}
+
+
+	if (heelSwitchR==1) {
+
+		Kp3=1;
+		Kd3=0.7;
+
+		Kp4=1;
+		Kd4=0.3;
+
+		rAngle3 = 40 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = -5  / 180.0 * M_PI * 65 / 12;
+
+		stageR=1;
+	}
+
+
+	else if (heelSwitchR==2) {
+
+		Kp3=1;
+		Kd3=0.7;
+
+		Kp4=1;
+		Kd4=0.3;
+
+		rAngle3 = -5 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
+
+		stageR=2;
+
+
+		if(posF3<0){
+			heelSwitchR=3;
+		}
+	}
+
+
+
+	else if (heelSwitchR==3) {
+
+		Kp3=0.5;
+		Kd3=0.4;
+
+		Kp4=0.5;
+		Kd4=0.4;
+
+		rAngle3 = -45 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 30  / 180.0 * M_PI * 65 / 12;
+
+
+		stageR=3;
+
+		if(abs(posF3)>23){
+			heelSwitchR=4;
+		}
+
+	}
+
+
+	else if (heelSwitchR==4) {
+
+		Kp3=0.5;
+		Kd3=0.2;
+
+		Kp4=0.5;
+		Kd4=0.2;
+
+		rAngle3 = 10 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 90  / 180.0 * M_PI * 65 / 12;
+
+
+		stageR=4;
+
+		if(posF4>68){
+			heelSwitchR=5;
+		}
+	}
+
+
+	else if (heelSwitchR==5) {
+
+		Kp3=0.5;
+		Kd3=0.2;
+
+		Kp4=0.5;
+		Kd4=0.1;
+
+		rAngle3 = 65 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
+
+
+		stageR=5;
+
+		if(posF3>40){
+			heelSwitchR=1;
+		}
+	}
 
 
 
 
-//		if(abs(posF1)-0<epsilon){
-//			stage=2;
-//
-//		}
-//
-//	} else if (stage==2) {
-//		Kp1=1;
-//		Kd1=0.5;
-//
-//		Kp2=1;
-//		Kd2=0.2;
-//
-////		rAngle1 = -30 / 180.0 * M_PI * 65 / 12;
-////		rAngle2 = 15  / 180.0 * M_PI * 65 / 12;
-//
-//		rAngle1 = hipAngle[1] / 180.0 * M_PI * 65 / 12;
-//		rAngle2 = kneeAngle[1]  / 180.0 * M_PI * 65 / 12;
-//
-//
-//		if(abs(abs(posF1)-23)<epsilon){
-//			stage=3;
-//		}
-//
-//	} else if (stage==3) {
-//		Kp1=0.6;
-//		Kd1=0.2;
-//
-//		Kp2=0.5;
-//		Kd2=0.2;
-//
-////		rAngle1 = 20 / 180.0 * M_PI * 65 / 12;
-////		rAngle2 = 75 / 180.0 * M_PI * 65 / 12;
-//
-//		rAngle1 = hipAngle[2] / 180.0 * M_PI * 65 / 12;
-//		rAngle2 = kneeAngle[2]  / 180.0 * M_PI * 65 / 12;
-//
-//
-////		if(abs(posF1)-5 <epsilon){
-////			stage=4;
-////		}
-//	} else if (stage==4) {
-//		Kp1=0.6;
-//		Kd1=0.2;
-//
-//		Kp2=0.5;
-//		Kd2=0.2;
-//
-////		rAngle1 = 30 / 180.0 * M_PI * 65 / 12;
-////		rAngle2 = 0 / 180.0 * M_PI * 65 / 12;
-//
-//
-//		rAngle1 = hipAngle[2] / 180.0 * M_PI * 65 / 12;
-//		rAngle2 = kneeAngle[2]  / 180.0 * M_PI * 65 / 12;
-//
-////		if(heelSwitch==1){
-////			stage=1;
-////		}
-//	}
 
 
 
 
-
-	rAngle3 = -rAngle3;
-	rAngle4 = -rAngle4;
 
 
 
@@ -1138,18 +1161,19 @@ void Stop_Motors(int motor1, int motor2, int motor3, int motor4) {
 /* USER CODE END 4 */
 
 /**
- * @brief  This function is executed in case of error occurrence.
- * @retval None
- */
-void Error_Handler(void) {
-	/* USER CODE BEGIN Error_Handler_Debug */
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
 	/* User can add his own implementation to report the HAL error return state */
 	char msg[50];
 	sprintf(msg, "Error Handler Trigerred!\r\n");
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 	Stop_Motors(1, 1, 1, 1);
 
-	/* USER CODE END Error_Handler_Debug */
+  /* USER CODE END Error_Handler_Debug */
 }
 
 #ifdef  USE_FULL_ASSERT
