@@ -99,8 +99,6 @@ uint32_t TxMailbox;	//data type dictated by HAL
 
 int cycle;
 
-int stage=0;
-int stageRight=0;
 
 int heelSwitchLeft=0;
 int heelSwitchRight=0;
@@ -144,9 +142,6 @@ float rAngle3=0;
 float rAngle4=0;
 
 //********************************************************************************
-//switch status
-uint8_t buttonState = 0;
-uint8_t lastButtonState = 0;
 
 //switch status
 uint8_t buttonStateRight = 0;
@@ -846,7 +841,7 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 
 	char msg[100];
-	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", stageRight, posF3, posF4, stage, posF1, posF2);
+	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", heelSwitchRight, posF3, posF4, heelSwitchLeft, posF1, posF2);
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
@@ -921,8 +916,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle1 = 40 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = -5  / 180.0 * M_PI * 65 / 12;
-
-		stage=1;
 	}
 
 
@@ -936,9 +929,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle1 = -5 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
-
-		stage=2;
-
 
 		if(posF1<0){
 			heelSwitchLeft=3;
@@ -957,9 +947,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle1 = -45 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 30  / 180.0 * M_PI * 65 / 12;
-
-
-		stage=3;
 
 		if(abs(posF1)>23){
 			heelSwitchLeft=4;
@@ -980,8 +967,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = 90  / 180.0 * M_PI * 65 / 12;
 
 
-		stage=4;
-
 		if(posF2>68){
 			heelSwitchLeft=5;
 		}
@@ -999,8 +984,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = 65 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
 
-
-		stage=5;
 
 		if(posF1>40){
 			heelSwitchLeft=1;
@@ -1023,7 +1006,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = 40 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = -5  / 180.0 * M_PI * 65 / 12;
 
-		stageRight=1;
 	}
 
 
@@ -1037,8 +1019,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle3 = -5 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
-
-		stageRight=2;
 
 
 		if(posF3<0){
@@ -1060,7 +1040,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 30  / 180.0 * M_PI * 65 / 12;
 
 
-		stageRight=3;
 
 		if(abs(posF3)>23){
 			heelSwitchRight=4;
@@ -1081,7 +1060,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 90  / 180.0 * M_PI * 65 / 12;
 
 
-		stageRight=4;
 
 		if(posF4>68){
 			heelSwitchRight=5;
@@ -1100,8 +1078,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = 65 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
 
-
-		stageRight=5;
 
 		if(posF3>40){
 			heelSwitchRight=1;
