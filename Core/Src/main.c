@@ -100,10 +100,10 @@ uint32_t TxMailbox;	//data type dictated by HAL
 int cycle;
 
 int stage=0;
-int stageR=0;
+int stageRight=0;
 
-int heelSwitch=0;
-int heelSwitchR=0;
+int heelSwitchLeft=0;
+int heelSwitchRight=0;
 
 //Receiving parameter variables
 //for motor 1
@@ -149,12 +149,12 @@ uint8_t buttonState = 0;
 uint8_t lastButtonState = 0;
 
 //switch status
-uint8_t buttonStateR = 0;
-uint8_t lastButtonStateR = 0;
+uint8_t buttonStateRight = 0;
+uint8_t lastButtonStateRight = 0;
 
 //switch status
-uint8_t buttonStateL = 0;
-uint8_t lastButtonStateL = 0;
+uint8_t buttonStateLeft = 0;
+uint8_t lastButtonStateLeft = 0;
 
 
 
@@ -846,7 +846,7 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 
 	char msg[100];
-	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", stageR, posF3, posF4, stage, posF1, posF2);
+	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", stageRight, posF3, posF4, stage, posF1, posF2);
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
@@ -862,43 +862,23 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
-	static uint8_t lastButtonState = GPIO_PIN_RESET; // Initially not pressed
 
-	uint8_t buttonState = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_12);
+	static uint8_t lastButtonStateRight = GPIO_PIN_RESET; // Initially not pressed
 
-	if (buttonState == GPIO_PIN_SET && lastButtonState == GPIO_PIN_RESET) {
+	uint8_t buttonStateRight = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10);
+
+	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-//		if (heelSwitch==0 || heelSwitch==1) {
-//		heelSwitch=heelSwitch+1;
-//		char msg[50];
-//		sprintf(msg, "Heel Switch Trigerred!" );
-//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-//		}
-
-	}
-
-	lastButtonState = buttonState;
-
-
-
-
-
-	static uint8_t lastButtonStateR = GPIO_PIN_RESET; // Initially not pressed
-
-	uint8_t buttonStateR = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10);
-
-	if (buttonStateR == GPIO_PIN_SET && lastButtonStateR == GPIO_PIN_RESET) {
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchR==0 || heelSwitchR==1) {
-		heelSwitchR=heelSwitchR+1;
+		if (heelSwitchRight==0 || heelSwitchRight==1) {
+		heelSwitchRight=heelSwitchRight+1;
 		char msg[50];
-		sprintf(msg, "Heel Switch Right Trigerred!" );
+		sprintf(msg, "Heel Switch Right Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		}
 
 	}
 
-	lastButtonStateR = buttonStateR;
+	lastButtonStateRight = buttonStateRight;
 
 
 
@@ -906,22 +886,22 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-	static uint8_t lastButtonStateL = GPIO_PIN_RESET; // Initially not pressed
+	static uint8_t lastButtonStateLeft = GPIO_PIN_RESET; // Initially not pressed
 
-	uint8_t buttonStateL = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11);
+	uint8_t buttonStateLeft = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11);
 
-	if (buttonStateL == GPIO_PIN_SET && lastButtonStateL == GPIO_PIN_RESET) {
+	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitch==0 || heelSwitch==1) {
-		heelSwitch=heelSwitch+1;
+		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
+		heelSwitchLeft=heelSwitchLeft+1;
 		char msg[50];
-		sprintf(msg, "Heel Switch Trigerred!" );
+		sprintf(msg, "Heel Switch Left Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		}
 
 	}
 
-	lastButtonStateL = buttonStateL;
+	lastButtonStateLeft = buttonStateLeft;
 
 
 
@@ -930,8 +910,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	ttime = cycle * samplingTime * 1e-3;
 
 
-
-	if (heelSwitch==1) {
+	//	***********************************   Left Leg   ***********************************
+	if (heelSwitchLeft==1) {
 
 		Kp1=1;
 		Kd1=0.7;
@@ -946,7 +926,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	}
 
 
-	else if (heelSwitch==2) {
+	else if (heelSwitchLeft==2) {
 
 		Kp1=1;
 		Kd1=0.7;
@@ -961,13 +941,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 		if(posF1<0){
-			heelSwitch=3;
+			heelSwitchLeft=3;
 		}
 	}
 
 
 
-	else if (heelSwitch==3) {
+	else if (heelSwitchLeft==3) {
 
 		Kp1=0.5;
 		Kd1=0.4;
@@ -982,13 +962,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		stage=3;
 
 		if(abs(posF1)>23){
-			heelSwitch=4;
+			heelSwitchLeft=4;
 		}
 
 	}
 
 
-	else if (heelSwitch==4) {
+	else if (heelSwitchLeft==4) {
 
 		Kp1=0.5;
 		Kd1=0.2;
@@ -1003,12 +983,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		stage=4;
 
 		if(posF2>68){
-			heelSwitch=5;
+			heelSwitchLeft=5;
 		}
 	}
 
 
-	else if (heelSwitch==5) {
+	else if (heelSwitchLeft==5) {
 
 		Kp1=0.5;
 		Kd1=0.2;
@@ -1023,13 +1003,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		stage=5;
 
 		if(posF1>40){
-			heelSwitch=1;
+			heelSwitchLeft=1;
 		}
 	}
 
 
 
-	if (heelSwitchR==1) {
+
+
+//	***********************************   Right Leg   ***********************************
+	if (heelSwitchRight==1) {
 
 		Kp3=1;
 		Kd3=0.7;
@@ -1040,11 +1023,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = 40 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = -5  / 180.0 * M_PI * 65 / 12;
 
-		stageR=1;
+		stageRight=1;
 	}
 
 
-	else if (heelSwitchR==2) {
+	else if (heelSwitchRight==2) {
 
 		Kp3=1;
 		Kd3=0.7;
@@ -1055,17 +1038,17 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = -5 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
 
-		stageR=2;
+		stageRight=2;
 
 
 		if(posF3<0){
-			heelSwitchR=3;
+			heelSwitchRight=3;
 		}
 	}
 
 
 
-	else if (heelSwitchR==3) {
+	else if (heelSwitchRight==3) {
 
 		Kp3=0.5;
 		Kd3=0.4;
@@ -1077,16 +1060,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 30  / 180.0 * M_PI * 65 / 12;
 
 
-		stageR=3;
+		stageRight=3;
 
 		if(abs(posF3)>23){
-			heelSwitchR=4;
+			heelSwitchRight=4;
 		}
 
 	}
 
 
-	else if (heelSwitchR==4) {
+	else if (heelSwitchRight==4) {
 
 		Kp3=0.5;
 		Kd3=0.2;
@@ -1098,15 +1081,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 90  / 180.0 * M_PI * 65 / 12;
 
 
-		stageR=4;
+		stageRight=4;
 
 		if(posF4>68){
-			heelSwitchR=5;
+			heelSwitchRight=5;
 		}
 	}
 
 
-	else if (heelSwitchR==5) {
+	else if (heelSwitchRight==5) {
 
 		Kp3=0.5;
 		Kd3=0.2;
@@ -1118,10 +1101,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
 
 
-		stageR=5;
+		stageRight=5;
 
 		if(posF3>40){
-			heelSwitchR=1;
+			heelSwitchRight=1;
 		}
 	}
 

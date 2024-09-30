@@ -13,6 +13,6 @@
 ../Core/Src/main.c:685:6:CAN1_Tx_send_to_motor	3
 ../Core/Src/main.c:739:6:CAN1_Rx_message_read	7
 ../Core/Src/main.c:797:6:signalMotors	5
-../Core/Src/main.c:862:6:HAL_TIM_PeriodElapsedCallback	29
-../Core/Src/main.c:1145:6:Stop_Motors	5
-../Core/Src/main.c:1167:6:Error_Handler	1
+../Core/Src/main.c:862:6:HAL_TIM_PeriodElapsedCallback	27
+../Core/Src/main.c:1128:6:Stop_Motors	5
+../Core/Src/main.c:1150:6:Error_Handler	1
