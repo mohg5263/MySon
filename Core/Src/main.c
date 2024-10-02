@@ -100,7 +100,7 @@ uint32_t TxMailbox;	//data type dictated by HAL
 int cycle;
 
 
-int heelSwitchLeft=0;
+int heelSwitchLeft=2;
 int heelSwitchRight=0;
 
 //Receiving parameter variables
@@ -918,7 +918,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = -5  / 180.0 * M_PI * 65 / 12;
 	}
 
-
 	else if (heelSwitchLeft==2) {
 
 		Kp1=1;
@@ -930,12 +929,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = -5 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
 
-		if(posF1<0){
+		if(posF1<-3){
 			heelSwitchLeft=3;
 		}
 	}
-
-
 
 	else if (heelSwitchLeft==3) {
 
@@ -954,7 +951,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	}
 
-
 	else if (heelSwitchLeft==4) {
 
 		Kp1=0.5;
@@ -971,7 +967,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			heelSwitchLeft=5;
 		}
 	}
-
 
 	else if (heelSwitchLeft==5) {
 
@@ -995,7 +990,20 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 //	***********************************   Right Leg   ***********************************
-	if (heelSwitchRight==1) {
+	if (heelSwitchRight==0) {
+
+		Kp3=1;
+		Kd3=0.7;
+
+		Kp4=1;
+		Kd4=0.3;
+
+		rAngle3 = 0 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
+	}
+
+
+	else if (heelSwitchRight==1) {
 
 		Kp3=1;
 		Kd3=0.7;
@@ -1005,9 +1013,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle3 = 40 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = -5  / 180.0 * M_PI * 65 / 12;
-
 	}
-
 
 	else if (heelSwitchRight==2) {
 
@@ -1021,12 +1027,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
 
 
-		if(posF3<0){
+		if(posF3<-3){
 			heelSwitchRight=3;
 		}
 	}
-
-
 
 	else if (heelSwitchRight==3) {
 
@@ -1044,9 +1048,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if(abs(posF3)>23){
 			heelSwitchRight=4;
 		}
-
 	}
-
 
 	else if (heelSwitchRight==4) {
 
@@ -1058,8 +1060,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle3 = 10 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 90  / 180.0 * M_PI * 65 / 12;
-
-
 
 		if(posF4>68){
 			heelSwitchRight=5;
@@ -1075,10 +1075,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=0.5;
 		Kd4=0.1;
 
-		rAngle3 = 65 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = 70 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
-
-
 		if(posF3>40){
 			heelSwitchRight=1;
 		}
