@@ -29,6 +29,8 @@
 #include <stdint.h>
 #include <math.h>
 
+#include "stm32l4xx_ll_i2c.h"
+
 
 /* USER CODE END Includes */
 
@@ -49,6 +51,8 @@
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
 
+I2C_HandleTypeDef hi2c1;
+
 TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
@@ -66,6 +70,13 @@ UART_HandleTypeDef huart2;
 #define Kd_MIN 0.0f
 #define Kd_MAX 5.0f
 
+
+// MPU6050 I2C address and configuration registers
+#define MPU6050_ADDR 0xD0
+#define ACCEL_XOUT_H 0x3B
+#define ACCEL_CONFIG 0x1C
+#define ACCEL_SENSITIVITY 2048.0 // For ±16g range
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -74,6 +85,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 void CAN1_Tx_motor_on(int);
 void CAN1_Tx_motor_zero(int);
@@ -216,6 +228,12 @@ float ttime = 0;
 float ttime1 = 0;
 float ttime2 = 0;
 
+
+// Variables to hold accelerometer data
+int16_t accelX_raw, accelY_raw, accelZ_raw;
+float accelX_m_s2, accelY_m_s2, accelZ_m_s2;
+char msgAccel[100];
+
 //********************************************************************************
 
 float saturate(float x, float x_min, float x_max) {
@@ -244,6 +262,54 @@ float uint_to_float(int x_int, float x_min, float x_max, int bits) {
 	float offset = x_min;
 	return ((float) x_int) * span / ((float) ((1 << bits) - 1)) + offset;
 }
+
+// Function to initialize MPU6050
+void MPU6050_Init(void)
+{
+	uint8_t config = 0x18; // Set full scale to ±16g (bits 4:3 = 11)
+    HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, ACCEL_CONFIG, I2C_MEMADD_SIZE_8BIT, &config, 1, 1000);
+
+    // Additional configuration
+    uint8_t power_mgmt_1 = 0x00; // Wake the MPU6050 up
+    HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, 0x6B, I2C_MEMADD_SIZE_8BIT, &power_mgmt_1, 1, 1000);
+}
+
+// Function to read accelerometer data and process it
+void MPU6050_Read_Accel(void)
+{
+    uint8_t accel_data[6];
+
+    // Read the accelerometer data from MPU6050
+    if (HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, accel_data, 6, 1000) == HAL_OK)
+    {
+        // Combine high and low bytes for each axis
+        accelX_raw = (int16_t)(accel_data[0] << 8 | accel_data[1]);
+        accelY_raw = (int16_t)(accel_data[2] << 8 | accel_data[3]);
+        accelZ_raw = (int16_t)(accel_data[4] << 8 | accel_data[5]);
+
+        // Validate the raw data ranges (for ±2g, valid range is -32768 to 32767)
+        if (accelX_raw > 32767 || accelX_raw < -32768) accelX_raw = 0; // Invalid reading
+        if (accelY_raw > 32767 || accelY_raw < -32768) accelY_raw = 0; // Invalid reading
+        if (accelZ_raw > 32767 || accelZ_raw < -32768) accelZ_raw = 0; // Invalid reading
+
+        // Convert raw accelerometer data to acceleration in m/s²
+        accelX_m_s2 = (float)accelX_raw / ACCEL_SENSITIVITY * 9.81;
+        accelY_m_s2 = (float)accelY_raw / ACCEL_SENSITIVITY * 9.81;
+        accelZ_m_s2 = (float)accelZ_raw / ACCEL_SENSITIVITY * 9.81;
+
+        // Send the acceleration data via UART (for display in PuTTY)
+        sprintf(msgAccel, "Accel X: %.2f m/s², Y: %.2f m/s², Z: %.2f m/s²\r\n", accelX_m_s2, accelY_m_s2, accelZ_m_s2);
+        HAL_UART_Transmit(&huart2, (uint8_t *)msgAccel, strlen(msgAccel), 1000);
+    }
+    else
+    {
+        // Handle I2C read failure
+        sprintf(msgAccel, "Error reading from MPU6050\n");
+        HAL_UART_Transmit(&huart2, (uint8_t *)msgAccel, strlen(msgAccel), 1000);
+    }
+}
+
+
 
 /* USER CODE END 0 */
 
@@ -279,7 +345,19 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN1_Init();
   MX_TIM6_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+
+  // Initialize MPU6050 sensor
+  MPU6050_Init();
+
+  // Start the timer
+  HAL_TIM_Base_Start_IT(&htim6);
+
+
+
+
+
 	if (HAL_CAN_Start(&hcan1) != HAL_OK) //CAN is started and checked for error.
 			{
 		Error_Handler();
@@ -437,6 +515,54 @@ static void MX_CAN1_Init(void)
 		Error_Handler();
 	}
   /* USER CODE END CAN1_Init 2 */
+
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x10909CEC;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
 
 }
 
@@ -856,7 +982,7 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
-
+	 //MPU6050_Read_Accel(); // Read accelerometer data
 
 	static uint8_t lastButtonStateRight = GPIO_PIN_RESET; // Initially not pressed
 
