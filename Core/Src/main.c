@@ -29,13 +29,17 @@
 #include <stdint.h>
 #include <math.h>
 
-#include "stm32l4xx_ll_i2c.h"
-
 
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
+
+// MPU6050 I2C address and configuration registers
+#define MPU6050_ADDR 0xD0
+#define ACCEL_XOUT_H 0x3B
+#define ACCEL_CONFIG 0x1C
+#define ACCEL_SENSITIVITY 2048.0 // For ±16g range
 
 /* USER CODE END PTD */
 
@@ -58,6 +62,13 @@ TIM_HandleTypeDef htim6;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
+
+
+
+
+
+
+
 // limit data to be within bounds (specific to the AK80-9 motor)
 #define P_MIN -12.5f	//position
 #define P_MAX 12.5f
@@ -69,13 +80,6 @@ UART_HandleTypeDef huart2;
 #define Kp_MAX 500.0f
 #define Kd_MIN 0.0f
 #define Kd_MAX 5.0f
-
-
-// MPU6050 I2C address and configuration registers
-#define MPU6050_ADDR 0xD0
-#define ACCEL_XOUT_H 0x3B
-#define ACCEL_CONFIG 0x1C
-#define ACCEL_SENSITIVITY 2048.0 // For ±16g range
 
 /* USER CODE END PV */
 
@@ -95,7 +99,11 @@ float interpolateHipAngle(float);
 float interpolateKneeAngle(float);
 void Stop_Motors(int, int, int, int);
 
+void MPU6050_Init(void);
+void MPU6050_Read_Accel(void);
+
 // Prototype of the template function
+
 
 /* USER CODE END PFP */
 
@@ -164,6 +172,13 @@ uint8_t buttonStateLeft = 0;
 uint8_t lastButtonStateLeft = 0;
 
 
+// Variables to hold accelerometer data
+int16_t accelX_raw, accelY_raw, accelZ_raw;
+float accelX_m_s2, accelY_m_s2, accelZ_m_s2;
+char msg[100];
+
+
+
 
 // PID variables
 int motorID1 = 1;
@@ -228,12 +243,6 @@ float ttime = 0;
 float ttime1 = 0;
 float ttime2 = 0;
 
-
-// Variables to hold accelerometer data
-int16_t accelX_raw, accelY_raw, accelZ_raw;
-float accelX_m_s2, accelY_m_s2, accelZ_m_s2;
-char msgAccel[100];
-
 //********************************************************************************
 
 float saturate(float x, float x_min, float x_max) {
@@ -263,6 +272,9 @@ float uint_to_float(int x_int, float x_min, float x_max, int bits) {
 	return ((float) x_int) * span / ((float) ((1 << bits) - 1)) + offset;
 }
 
+
+
+
 // Function to initialize MPU6050
 void MPU6050_Init(void)
 {
@@ -273,7 +285,6 @@ void MPU6050_Init(void)
     uint8_t power_mgmt_1 = 0x00; // Wake the MPU6050 up
     HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, 0x6B, I2C_MEMADD_SIZE_8BIT, &power_mgmt_1, 1, 1000);
 }
-
 // Function to read accelerometer data and process it
 void MPU6050_Read_Accel(void)
 {
@@ -297,17 +308,23 @@ void MPU6050_Read_Accel(void)
         accelY_m_s2 = (float)accelY_raw / ACCEL_SENSITIVITY * 9.81;
         accelZ_m_s2 = (float)accelZ_raw / ACCEL_SENSITIVITY * 9.81;
 
-        // Send the acceleration data via UART (for display in PuTTY)
-        sprintf(msgAccel, "Accel X: %.2f m/s², Y: %.2f m/s², Z: %.2f m/s²\r\n", accelX_m_s2, accelY_m_s2, accelZ_m_s2);
-        HAL_UART_Transmit(&huart2, (uint8_t *)msgAccel, strlen(msgAccel), 1000);
+//    	char msg[200];
+//    	sprintf(msg, "Accel X: %.2f m/s², Y: %.2f m/s², Z: %.2f m/s²  \r\n", accelX_m_s2, accelY_m_s2, accelZ_m_s2);
+//    	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
     }
     else
     {
         // Handle I2C read failure
-        sprintf(msgAccel, "Error reading from MPU6050\n");
-        HAL_UART_Transmit(&huart2, (uint8_t *)msgAccel, strlen(msgAccel), 1000);
+        sprintf(msg, "Error reading from MPU6050\n");
+        HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 1000);
     }
 }
+
+
+
+
+
 
 
 
@@ -347,17 +364,6 @@ int main(void)
   MX_TIM6_Init();
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-
-  // Initialize MPU6050 sensor
-  MPU6050_Init();
-
-  // Start the timer
-  HAL_TIM_Base_Start_IT(&htim6);
-
-
-
-
-
 	if (HAL_CAN_Start(&hcan1) != HAL_OK) //CAN is started and checked for error.
 			{
 		Error_Handler();
@@ -398,6 +404,10 @@ int main(void)
 
 	sprintf(msg, "Motor 4 Initialized!\r\n");
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+
+	// Initialize MPU6050 sensor
+	MPU6050_Init();
 
 	// Start timer
 	HAL_TIM_Base_Start_IT(&htim6);
@@ -966,8 +976,8 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 	torqueF4 = torque_4;
 
 
-	char msg[100];
-	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", heelSwitchRight, posF3, posF4, heelSwitchLeft, posF1, posF2);
+	char msg[200];
+	sprintf(msg, "Accel X: %.2f m/s², Y: %.2f m/s², Z: %.2f m/s²  ||||||  Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", accelX_m_s2, accelY_m_s2, accelZ_m_s2, heelSwitchRight, posF3, posF4, heelSwitchLeft, posF1, posF2);
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
@@ -979,10 +989,10 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 
 
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
-	 //MPU6050_Read_Accel(); // Read accelerometer data
+	MPU6050_Read_Accel();
+
 
 	static uint8_t lastButtonStateRight = GPIO_PIN_RESET; // Initially not pressed
 
