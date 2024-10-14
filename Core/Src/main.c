@@ -35,12 +35,6 @@
 /* Private typedef -----------------------------------------------------------*/
 /* USER CODE BEGIN PTD */
 
-// MPU6050 I2C address and configuration registers
-#define MPU6050_ADDR 0xD0
-#define ACCEL_XOUT_H 0x3B
-#define ACCEL_CONFIG 0x1C
-#define ACCEL_SENSITIVITY 2048.0 // For ±16g range
-
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
@@ -55,20 +49,11 @@
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
 
-I2C_HandleTypeDef hi2c1;
-
 TIM_HandleTypeDef htim6;
 
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
-
-
-
-
-
-
 // limit data to be within bounds (specific to the AK80-9 motor)
 #define P_MIN -12.5f	//position
 #define P_MAX 12.5f
@@ -89,7 +74,7 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_TIM6_Init(void);
-static void MX_I2C1_Init(void);
+
 /* USER CODE BEGIN PFP */
 void CAN1_Tx_motor_on(int);
 void CAN1_Tx_motor_zero(int);
@@ -98,12 +83,11 @@ void CAN1_Rx_message_read(void);
 float interpolateHipAngle(float);
 float interpolateKneeAngle(float);
 void Stop_Motors(int, int, int, int);
-
-void MPU6050_Init(void);
-void MPU6050_Read_Accel(void);
+void impedanceControl(void);
+void zeroAllMotors(int);
+void initializeLegs(int);
 
 // Prototype of the template function
-
 
 /* USER CODE END PFP */
 
@@ -117,11 +101,19 @@ uint8_t RxData[8];	//08 bytes of data receive array, data type dictated by HAL
 
 uint32_t TxMailbox;	//data type dictated by HAL
 
+int initState=0;
 int cycle;
 
 
 int heelSwitchLeft=2;
 int heelSwitchRight=0;
+
+//int rightLegInitialized=0;
+//int leftLegInitialized=0;
+//
+int areLegsInitialized=0;
+
+
 
 //Receiving parameter variables
 //for motor 1
@@ -170,13 +162,6 @@ uint8_t lastButtonStateRight = 0;
 //switch status
 uint8_t buttonStateLeft = 0;
 uint8_t lastButtonStateLeft = 0;
-
-
-// Variables to hold accelerometer data
-int16_t accelX_raw, accelY_raw, accelZ_raw;
-float accelX_m_s2, accelY_m_s2, accelZ_m_s2;
-char msg[100];
-
 
 
 
@@ -243,6 +228,8 @@ float ttime = 0;
 float ttime1 = 0;
 float ttime2 = 0;
 
+
+
 //********************************************************************************
 
 float saturate(float x, float x_min, float x_max) {
@@ -272,60 +259,24 @@ float uint_to_float(int x_int, float x_min, float x_max, int bits) {
 	return ((float) x_int) * span / ((float) ((1 << bits) - 1)) + offset;
 }
 
+void zeroAllMotors(int i){
+//	Left:1   Right:2    All:3
+	if (i==1 || i==3){
+	CAN1_Tx_motor_zero(motorID1);
+	CAN1_Rx_message_read();
 
+	CAN1_Tx_motor_zero(motorID2);
+	CAN1_Rx_message_read();
+	}
+	if(i==2 || i==3){
 
+	CAN1_Tx_motor_zero(motorID3);
+	CAN1_Rx_message_read();
 
-// Function to initialize MPU6050
-void MPU6050_Init(void)
-{
-	uint8_t config = 0x18; // Set full scale to ±16g (bits 4:3 = 11)
-    HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, ACCEL_CONFIG, I2C_MEMADD_SIZE_8BIT, &config, 1, 1000);
-
-    // Additional configuration
-    uint8_t power_mgmt_1 = 0x00; // Wake the MPU6050 up
-    HAL_I2C_Mem_Write(&hi2c1, MPU6050_ADDR, 0x6B, I2C_MEMADD_SIZE_8BIT, &power_mgmt_1, 1, 1000);
+	CAN1_Tx_motor_zero(motorID4);
+	CAN1_Rx_message_read();
+	}
 }
-// Function to read accelerometer data and process it
-void MPU6050_Read_Accel(void)
-{
-    uint8_t accel_data[6];
-
-    // Read the accelerometer data from MPU6050
-    if (HAL_I2C_Mem_Read(&hi2c1, MPU6050_ADDR, ACCEL_XOUT_H, I2C_MEMADD_SIZE_8BIT, accel_data, 6, 1000) == HAL_OK)
-    {
-        // Combine high and low bytes for each axis
-        accelX_raw = (int16_t)(accel_data[0] << 8 | accel_data[1]);
-        accelY_raw = (int16_t)(accel_data[2] << 8 | accel_data[3]);
-        accelZ_raw = (int16_t)(accel_data[4] << 8 | accel_data[5]);
-
-        // Validate the raw data ranges (for ±2g, valid range is -32768 to 32767)
-        if (accelX_raw > 32767 || accelX_raw < -32768) accelX_raw = 0; // Invalid reading
-        if (accelY_raw > 32767 || accelY_raw < -32768) accelY_raw = 0; // Invalid reading
-        if (accelZ_raw > 32767 || accelZ_raw < -32768) accelZ_raw = 0; // Invalid reading
-
-        // Convert raw accelerometer data to acceleration in m/s²
-        accelX_m_s2 = (float)accelX_raw / ACCEL_SENSITIVITY * 9.81;
-        accelY_m_s2 = (float)accelY_raw / ACCEL_SENSITIVITY * 9.81;
-        accelZ_m_s2 = (float)accelZ_raw / ACCEL_SENSITIVITY * 9.81;
-
-//    	char msg[200];
-//    	sprintf(msg, "Accel X: %.2f m/s², Y: %.2f m/s², Z: %.2f m/s²  \r\n", accelX_m_s2, accelY_m_s2, accelZ_m_s2);
-//    	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-    }
-    else
-    {
-        // Handle I2C read failure
-        sprintf(msg, "Error reading from MPU6050\n");
-        HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), 1000);
-    }
-}
-
-
-
-
-
-
 
 
 /* USER CODE END 0 */
@@ -362,57 +313,52 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN1_Init();
   MX_TIM6_Init();
-  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
+
+
 	if (HAL_CAN_Start(&hcan1) != HAL_OK) //CAN is started and checked for error.
 			{
 		Error_Handler();
 	}
-	CAN1_Tx_motor_on(motorID1);
-	CAN1_Rx_message_read();
 
-	CAN1_Tx_motor_zero(motorID1);
+
+	CAN1_Tx_motor_on(motorID1);
 	CAN1_Rx_message_read();
 
 	char msg[50];
 	sprintf(msg, "Motor 1 Initialized!\r\n");
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-	CAN1_Tx_motor_on(motorID2);
-	CAN1_Rx_message_read();
 
-	CAN1_Tx_motor_zero(motorID2);
+	CAN1_Tx_motor_on(motorID2);
 	CAN1_Rx_message_read();
 
 	sprintf(msg, "Motor 2 Initialized!\r\n");
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-	CAN1_Tx_motor_on(motorID3);
-	CAN1_Rx_message_read();
 
-	CAN1_Tx_motor_zero(motorID3);
+
+	CAN1_Tx_motor_on(motorID3);
 	CAN1_Rx_message_read();
 
 	sprintf(msg, "Motor 3 Initialized!\r\n");
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-	CAN1_Tx_motor_on(motorID4);
-	CAN1_Rx_message_read();
 
-	CAN1_Tx_motor_zero(motorID4);
+
+	CAN1_Tx_motor_on(motorID4);
 	CAN1_Rx_message_read();
 
 	sprintf(msg, "Motor 4 Initialized!\r\n");
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
-
-	// Initialize MPU6050 sensor
-	MPU6050_Init();
-
 	// Start timer
 	HAL_TIM_Base_Start_IT(&htim6);
 
 	cycle = 0;
+
+	zeroAllMotors(3);
+
 
   /* USER CODE END 2 */
 
@@ -525,54 +471,6 @@ static void MX_CAN1_Init(void)
 		Error_Handler();
 	}
   /* USER CODE END CAN1_Init 2 */
-
-}
-
-/**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C1_Init(void)
-{
-
-  /* USER CODE BEGIN I2C1_Init 0 */
-
-  /* USER CODE END I2C1_Init 0 */
-
-  /* USER CODE BEGIN I2C1_Init 1 */
-
-  /* USER CODE END I2C1_Init 1 */
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x10909CEC;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure Analogue filter
-  */
-  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure Digital filter
-  */
-  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
 
 }
 
@@ -738,10 +636,6 @@ void CAN1_Tx_motor_on(int motor_id) {
 		Error_Handler();
 	}
 
-//	// Polling method, Wait for message to get out of pending state, that means wait until the message is transmitted successfully.
-//	while (HAL_CAN_IsTxMessagePending(&hcan1, TxMailbox))
-//		;
-
 }
 
 void CAN1_Tx_motor_zero(int motor_id) {
@@ -774,9 +668,6 @@ void CAN1_Tx_motor_zero(int motor_id) {
 		Error_Handler();
 	}
 
-//	// Polling method, Wait for message to get out of pending state, that means wait until the message is transmitted successfully.
-//	while (HAL_CAN_IsTxMessagePending(&hcan1, TxMailbox))
-//		;
 }
 
 void CAN1_Tx_motor_off(int motor_id) {
@@ -808,9 +699,7 @@ void CAN1_Tx_motor_off(int motor_id) {
 		Error_Handler();
 	}
 
-//	// Polling method, Wait for message to get out of pending state, that means wait until the message is transmitted successfully.
-//	while (HAL_CAN_IsTxMessagePending(&hcan1, TxMailbox))
-//		;
+
 }
 
 void CAN1_Tx_send_to_motor(int motor_id, float pos, float vel, float kp,
@@ -861,16 +750,9 @@ void CAN1_Tx_send_to_motor(int motor_id, float pos, float vel, float kp,
 	if (HAL_CAN_AddTxMessage(&hcan1, &TxHeader, TxData, &TxMailbox) != HAL_OK) {
 		Error_Handler();
 	}
-
-//	// Polling method, Wait for message to get out of pending state, that means wait until the message is transmitted successfully.
-//	while (HAL_CAN_IsTxMessagePending(&hcan1, TxMailbox));
-
 }
 
 void CAN1_Rx_message_read(void) {
-
-//	char msg[50];	//for showing over the UART
-
 	//we are waiting for at least one message into the RX FIFO0. When that happens, the following code will get out of the loop.
 	//In RX FIFO, you can store 03 CAN messages.
 	while (!HAL_CAN_GetRxFifoFillLevel(&hcan1, CAN_RX_FIFO0))
@@ -921,12 +803,10 @@ void CAN1_Rx_message_read(void) {
 		torque_4 = i;
 		temp_4 = T - 40; // Temperature range: -40~215
 	}
-
 }
 
 
 void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
-
 	// Command motor 1 and read current CAN message
 	if (motorActivated1) {
 		CAN1_Tx_send_to_motor(motorID1, -rAngle1, 0, Kp1, Kd1, 0); //position mode
@@ -976,23 +856,113 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 	torqueF4 = torque_4;
 
 
-	char msg[200];
-	sprintf(msg, "Accel X: %.2f m/s², Y: %.2f m/s², Z: %.2f m/s²  ||||||  Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", accelX_m_s2, accelY_m_s2, accelZ_m_s2, heelSwitchRight, posF3, posF4, heelSwitchLeft, posF1, posF2);
-	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-
-
 }
 
 
 
+void initializeLegs(int leg){
+	//Left:1  Right:2
 
+	if (leg==1){
+		Kp1=1.5;
+		Kd1=2;
+
+		Kp2=1.5;
+		Kd2=2;
+
+		Kp3=0;
+		Kd3=0;
+
+		Kp4=0;
+		Kd4=0;
+
+//		char msg[50];
+//		sprintf(msg, "Initializing Legs: LEFT   " );
+//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+	}else if(leg==2){
+		Kp1=1.5;
+		Kd1=2;
+
+		Kp2=1.5;
+		Kd2=2;
+
+		Kp3=1.5;
+		Kd3=2;
+
+		Kp4=1.5;
+		Kd4=2;
+
+//		char msg[50];
+//		sprintf(msg, "Initializing Legs: RIGHT   " );
+//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+	}
+
+
+
+
+	rAngle1 = 0 / 180.0 * M_PI * 65 / 12;
+	rAngle2 = -90  / 180.0 * M_PI * 65 / 12;
+	rAngle3 = 0 / 180.0 * M_PI * 65 / 12;
+	rAngle4 = -90  / 180.0 * M_PI * 65 / 12;
+
+
+
+	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
+}
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	if (areLegsInitialized==0){
 
-	MPU6050_Read_Accel();
+		static uint8_t lastButtonStateRight = GPIO_PIN_RESET; // Initially not pressed
+		uint8_t buttonStateRight = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10);
+		if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
+			HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+			initState=initState+1;
+		}
+		lastButtonStateRight = buttonStateRight;
 
+
+		char msg[100];
+
+		if (initState==0){
+			sprintf(msg, "Bring Left Knee to full flexion and then click   \r\n" );
+		}
+		else if (initState==1){
+			zeroAllMotors(1);
+			sprintf(msg, "Left leg Zeroed - Click to stand left leg   \r\n" );
+		}
+		else if (initState==2){
+			initializeLegs(1);
+			sprintf(msg, "Left leg standing - Bring Right Leg to full flexion and click  \r\n" );
+		}
+		else if (initState==3){
+			zeroAllMotors(2);
+			sprintf(msg, "Right leg Zeroed - Click to stand right leg   \r\n" );
+		}
+		else if(initState==4){
+			initializeLegs(2);
+			sprintf(msg, "Right leg standing - Click to start impedance control  \r\n" );
+		}
+		else if(initState==5){
+			areLegsInitialized=1;
+			zeroAllMotors(3);
+
+		}
+		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+	}
+
+
+
+ else if (areLegsInitialized==1){
+		impedanceControl();
+	}
+
+}
+
+void impedanceControl(void){
 
 	static uint8_t lastButtonStateRight = GPIO_PIN_RESET; // Initially not pressed
 
@@ -1001,19 +971,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 		if (heelSwitchRight==0 || heelSwitchRight==1) {
-		heelSwitchRight=heelSwitchRight+1;
-		char msg[50];
-		sprintf(msg, "Heel Switch Right Triggered!" );
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+			heelSwitchRight=heelSwitchRight+1;
+			char msg[50];
+			sprintf(msg, "Heel Switch Right Triggered!" );
+			HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		}
 
 	}
 
 	lastButtonStateRight = buttonStateRight;
-
-
-
-
 
 
 
@@ -1024,10 +990,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
 		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
-		heelSwitchLeft=heelSwitchLeft+1;
-		char msg[50];
-		sprintf(msg, "Heel Switch Left Triggered!" );
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+			heelSwitchLeft=heelSwitchLeft+1;
+			char msg[50];
+			sprintf(msg, "Heel Switch Left Triggered!" );
+			HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		}
 
 	}
@@ -1041,7 +1007,21 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	ttime = cycle * samplingTime * 1e-3;
 
 
+
+
+
 	//	***********************************   Left Leg   ***********************************
+//	if (heelSwitchLeft==0) {
+//
+//		Kp1=1.5;
+//		Kd1=2;
+//
+//		Kp2=1.5;
+//		Kd2=2;
+//
+//		rAngle1 = 0 / 180.0 * M_PI * 65 / 12;
+//		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
+//	}
 	if (heelSwitchLeft==1) {
 
 		Kp1=1;
@@ -1222,18 +1202,18 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-
-
-
-
-
-
 	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
+
+	char msg[100];
+	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", heelSwitchRight, posF3, posF4, heelSwitchLeft, posF1, posF2);
+	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 
 }
+
+
 
 void Stop_Motors(int motor1, int motor2, int motor3, int motor4) {
 
