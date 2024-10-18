@@ -876,9 +876,6 @@ void initializeLegs(int leg){
 		Kp4=0;
 		Kd4=0;
 
-//		char msg[50];
-//		sprintf(msg, "Initializing Legs: LEFT   " );
-//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 	}else if(leg==2){
 		Kp1=1.5;
@@ -893,9 +890,6 @@ void initializeLegs(int leg){
 		Kp4=1.5;
 		Kd4=2;
 
-//		char msg[50];
-//		sprintf(msg, "Initializing Legs: RIGHT   " );
-//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 	}
 
@@ -1011,17 +1005,7 @@ void impedanceControl(void){
 
 
 	//	***********************************   Left Leg   ***********************************
-//	if (heelSwitchLeft==0) {
-//
-//		Kp1=1.5;
-//		Kd1=2;
-//
-//		Kp2=1.5;
-//		Kd2=2;
-//
-//		rAngle1 = 0 / 180.0 * M_PI * 65 / 12;
-//		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
-//	}
+
 	if (heelSwitchLeft==1) {
 
 		Kp1=1;
@@ -1042,10 +1026,10 @@ void impedanceControl(void){
 		Kp2=1;
 		Kd2=0.3;
 
-		rAngle1 = -5 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = -20 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
 
-		if(posF1<-3){
+		if(posF1<-15){
 			heelSwitchLeft=3;
 		}
 	}
@@ -1092,7 +1076,7 @@ void impedanceControl(void){
 		Kp2=0.5;
 		Kd2=0.1;
 
-		rAngle1 = 65 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = 70 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
 
 
@@ -1100,9 +1084,6 @@ void impedanceControl(void){
 			heelSwitchLeft=1;
 		}
 	}
-
-
-
 
 
 //	***********************************   Right Leg   ***********************************
@@ -1139,11 +1120,11 @@ void impedanceControl(void){
 		Kp4=1;
 		Kd4=0.3;
 
-		rAngle3 = -5 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = -20 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
 
 
-		if(posF3<-3){
+		if(posF3<-15){
 			heelSwitchRight=3;
 		}
 	}
@@ -1197,8 +1178,6 @@ void impedanceControl(void){
 			heelSwitchRight=1;
 		}
 	}
-
-
 
 
 
