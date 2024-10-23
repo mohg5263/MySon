@@ -864,12 +864,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchRight==0 || heelSwitchRight==1) {
+//		if (heelSwitchRight==0 || heelSwitchRight==1) {
 		heelSwitchRight=heelSwitchRight+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Right Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-		}
+//		}
 
 	}
 
@@ -887,12 +887,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
+//		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
 		heelSwitchLeft=heelSwitchLeft+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Left Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-		}
+//		}
 
 	}
 
@@ -906,7 +906,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 	//	***********************************   Left Leg   ***********************************
-
 	if (heelSwitchLeft==1) {
 
 		Kp1=1;
@@ -921,7 +920,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchLeft==2) {
 
-
 		Kp1=1;
 		Kd1=0.7;
 
@@ -931,23 +929,23 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = -5 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
 
-		if(posF1<0){
-			heelSwitchLeft=3;
-		}
+//		if(heelSwitchRight==2){
+//			heelSwitchLeft=3;
+//		}
 	}
 
 	else if (heelSwitchLeft==3) {
-		heelSwitchLeft=4;
-//		Kp1=0.5;
-//		Kd1=0.4;
-//
-//		Kp2=0.5;
-//		Kd2=0.4;
-//
-//		rAngle1 = -45 / 180.0 * M_PI * 65 / 12;
-//		rAngle2 = 30  / 180.0 * M_PI * 65 / 12;
-//
-//		if(posF1<-23){
+
+		Kp1=0.5;
+		Kd1=0.4;
+
+		Kp2=0.5;
+		Kd2=0.4;
+
+		rAngle1 = -45 / 180.0 * M_PI * 65 / 12;
+		rAngle2 = 30  / 180.0 * M_PI * 65 / 12;
+
+//		if(abs(posF1)>23){
 //			heelSwitchLeft=4;
 //		}
 
@@ -955,39 +953,47 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchLeft==4) {
 
-		Kp1=1;
-		Kd1=0.7;
+		Kp1=0.5;
+		Kd1=0.2;
 
-		Kp2=1;
-		Kd2=0.3;
+		Kp2=0.5;
+		Kd2=0.2;
 
-		rAngle1 = -30 / 180.0 * M_PI * 65 / 12;
-		rAngle2 = 70  / 180.0 * M_PI * 65 / 12;
+		rAngle1 = 10 / 180.0 * M_PI * 65 / 12;
+		rAngle2 = 90  / 180.0 * M_PI * 65 / 12;
 
 
-		if(posF2>60){
-			heelSwitchLeft=5;
-		}
+//		if(posF2>68){
+//			heelSwitchLeft=5;
+//		}
 	}
 
 	else if (heelSwitchLeft==5) {
-		heelSwitchLeft=1;
-//		Kp1=0.5;
-//		Kd1=0.2;
-//
-//		Kp2=0.5;
-//		Kd2=0.1;
-//
-//		rAngle1 = 70 / 180.0 * M_PI * 65 / 12;
-//		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
-//
-//
+
+		Kp1=0.5;
+		Kd1=0.2;
+
+		Kp2=0.5;
+		Kd2=0.1;
+
+		rAngle1 = 65 / 180.0 * M_PI * 65 / 12;
+		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
+
+
 //		if(posF1>40){
 //			heelSwitchLeft=1;
 //		}
 	}
 
+	else if (heelSwitchLeft==6) {
 
+		heelSwitchLeft=1;
+
+
+//		if(posF1>40){
+//			heelSwitchLeft=1;
+//		}
+	}
 
 
 
@@ -1029,63 +1035,63 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
 
 
-		if(posF3<0){
-			heelSwitchRight=3;
-		}
+//		if(posF3<-3){
+//			heelSwitchRight=3;
+//		}
 	}
 
 	else if (heelSwitchRight==3) {
-		heelSwitchRight=4;
 
-//		Kp3=0.5;
-//		Kd3=0.4;
-//
-//		Kp4=0.5;
-//		Kd4=0.4;
-//
-//		rAngle3 = -45 / 180.0 * M_PI * 65 / 12;
-//		rAngle4 = 30  / 180.0 * M_PI * 65 / 12;
-//
-//
-//
-//		if(posF3<-23){
+		Kp3=0.5;
+		Kd3=0.4;
+
+		Kp4=0.5;
+		Kd4=0.4;
+
+		rAngle3 = -45 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 30  / 180.0 * M_PI * 65 / 12;
+
+
+
+//		if(abs(posF3)>23){
 //			heelSwitchRight=4;
 //		}
 	}
 
 	else if (heelSwitchRight==4) {
 
+		Kp3=0.5;
+		Kd3=0.2;
 
-		Kp3=1;
-		Kd3=0.7;
+		Kp4=0.5;
+		Kd4=0.2;
 
-		Kp4=1;
-		Kd4=0.3;
+		rAngle3 = 10 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 90  / 180.0 * M_PI * 65 / 12;
 
-		rAngle3 = -30 / 180.0 * M_PI * 65 / 12;
-		rAngle4 = 70  / 180.0 * M_PI * 65 / 12;
-
-		if(posF4>60){
-			heelSwitchRight=5;
-		}
+//		if(posF4>68){
+//			heelSwitchRight=5;
+//		}
 	}
 
 
 	else if (heelSwitchRight==5) {
-		heelSwitchRight=1;
-//		Kp3=0.5;
-//		Kd3=0.2;
-//
-//		Kp4=0.5;
-//		Kd4=0.1;
-//
-//		rAngle3 = 70 / 180.0 * M_PI * 65 / 12;
-//		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
+
+		Kp3=0.5;
+		Kd3=0.2;
+
+		Kp4=0.5;
+		Kd4=0.1;
+
+		rAngle3 = 70 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
 //		if(posF3>40){
 //			heelSwitchRight=1;
 //		}
 	}
-
+	else if (heelSwitchRight==6) {
+		heelSwitchRight=1;
+	}
 
 
 
