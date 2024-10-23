@@ -103,6 +103,9 @@ int cycle;
 int heelSwitchLeft=2;
 int heelSwitchRight=0;
 
+int previous_heelSwitchRight = 0;
+int previous_heelSwitchLeft = 0;
+
 //Receiving parameter variables
 //for motor 1
 float position_1 = 0;
@@ -864,12 +867,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-//		if (heelSwitchRight==0 || heelSwitchRight==1) {
+		if (heelSwitchRight==0 || heelSwitchRight==1) {
 		heelSwitchRight=heelSwitchRight+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Right Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-//		}
+		}
 
 	}
 
@@ -887,12 +890,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-//		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
+		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
 		heelSwitchLeft=heelSwitchLeft+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Left Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-//		}
+		}
 
 	}
 
@@ -929,9 +932,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = -5 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
 
-//		if(heelSwitchRight==2){
-//			heelSwitchLeft=3;
-//		}
+		///  Syncing solved
+		if(previous_heelSwitchRight==1 &&  heelSwitchRight==2){
+			heelSwitchLeft=3;
+		}
 	}
 
 	else if (heelSwitchLeft==3) {
@@ -945,9 +949,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = -45 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 30  / 180.0 * M_PI * 65 / 12;
 
-//		if(abs(posF1)>23){
-//			heelSwitchLeft=4;
-//		}
+		if(abs(posF1)>23){
+			heelSwitchLeft=4;
+		}
 
 	}
 
@@ -963,9 +967,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = 90  / 180.0 * M_PI * 65 / 12;
 
 
-//		if(posF2>68){
-//			heelSwitchLeft=5;
-//		}
+		if(posF2>68){
+			heelSwitchLeft=5;
+		}
 	}
 
 	else if (heelSwitchLeft==5) {
@@ -980,20 +984,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
 
 
-//		if(posF1>40){
-//			heelSwitchLeft=1;
-//		}
+		if(posF1>40){
+			heelSwitchLeft=1;
+		}
 	}
 
-	else if (heelSwitchLeft==6) {
 
-		heelSwitchLeft=1;
-
-
-//		if(posF1>40){
-//			heelSwitchLeft=1;
-//		}
-	}
 
 
 
@@ -1034,10 +1030,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = -5 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
 
-
-//		if(posF3<-3){
-//			heelSwitchRight=3;
-//		}
+		///  syncing solved
+		if(previous_heelSwitchLeft==1 &&  heelSwitchLeft==2){
+			heelSwitchRight=3;
+		}
 	}
 
 	else if (heelSwitchRight==3) {
@@ -1053,9 +1049,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-//		if(abs(posF3)>23){
-//			heelSwitchRight=4;
-//		}
+		if(abs(posF3)>23){
+			heelSwitchRight=4;
+		}
 	}
 
 	else if (heelSwitchRight==4) {
@@ -1069,9 +1065,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = 10 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 90  / 180.0 * M_PI * 65 / 12;
 
-//		if(posF4>68){
-//			heelSwitchRight=5;
-//		}
+		if(posF4>68){
+			heelSwitchRight=5;
+		}
 	}
 
 
@@ -1085,17 +1081,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle3 = 70 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
-//		if(posF3>40){
-//			heelSwitchRight=1;
-//		}
+		if(posF3>40){
+			heelSwitchRight=1;
+		}
 	}
-	else if (heelSwitchRight==6) {
-		heelSwitchRight=1;
-	}
-
-
-
-
 
 
 
@@ -1103,6 +1092,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
+
+	previous_heelSwitchRight = heelSwitchRight;
+	previous_heelSwitchLeft = heelSwitchLeft;
 
 
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
