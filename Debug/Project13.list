@@ -3824,7 +3824,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  80022dc:	e9d3 2300 	ldrd	r2, r3, [r3]
  80022e0:	e9c1 2300 	strd	r2, r3, [r1]
 
-		rAngle1 = 70 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = 90 / 180.0 * M_PI * 65 / 12;
  80022e4:	4b70      	ldr	r3, [pc, #448]	@ (80024a8 <HAL_TIM_PeriodElapsedCallback+0x520>)
  80022e6:	4a76      	ldr	r2, [pc, #472]	@ (80024c0 <HAL_TIM_PeriodElapsedCallback+0x538>)
  80022e8:	601a      	str	r2, [r3, #0]
@@ -4063,7 +4063,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  80024b4:	41266358 	.word	0x41266358
  80024b8:	200003b4 	.word	0x200003b4
  80024bc:	42880000 	.word	0x42880000
- 80024c0:	40d3c441 	.word	0x40d3c441
+ 80024c0:	410822bc 	.word	0x410822bc
  80024c4:	407204dd 	.word	0x407204dd
  80024c8:	200003b0 	.word	0x200003b0
  80024cc:	42200000 	.word	0x42200000
@@ -4164,7 +4164,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  8002594:	e9d3 2300 	ldrd	r2, r3, [r3]
  8002598:	e9c1 2300 	strd	r2, r3, [r1]
 
-		rAngle3 = 70 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = 90 / 180.0 * M_PI * 65 / 12;
  800259c:	4b26      	ldr	r3, [pc, #152]	@ (8002638 <HAL_TIM_PeriodElapsedCallback+0x6b0>)
  800259e:	4a2c      	ldr	r2, [pc, #176]	@ (8002650 <HAL_TIM_PeriodElapsedCallback+0x6c8>)
  80025a0:	601a      	str	r2, [r3, #0]
@@ -4241,7 +4241,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
  8002644:	41266358 	.word	0x41266358
  8002648:	200003bc 	.word	0x200003bc
  800264c:	42880000 	.word	0x42880000
- 8002650:	40d3c441 	.word	0x40d3c441
+ 8002650:	410822bc 	.word	0x410822bc
  8002654:	407204dd 	.word	0x407204dd
  8002658:	200003b8 	.word	0x200003b8
  800265c:	42200000 	.word	0x42200000
