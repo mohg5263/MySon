@@ -964,7 +964,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kd2=0.2;
 
 		rAngle1 = 10 / 180.0 * M_PI * 65 / 12;
-		rAngle2 = 90  / 180.0 * M_PI * 65 / 12;
+		rAngle2 = 110  / 180.0 * M_PI * 65 / 12;
 
 
 		if(posF2>68){
@@ -980,7 +980,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp2=0.5;
 		Kd2=0.1;
 
-		rAngle1 = 65 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = 70 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
 
 
@@ -1063,7 +1063,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kd4=0.2;
 
 		rAngle3 = 10 / 180.0 * M_PI * 65 / 12;
-		rAngle4 = 90  / 180.0 * M_PI * 65 / 12;
+		rAngle4 = 110  / 180.0 * M_PI * 65 / 12;
 
 		if(posF4>68){
 			heelSwitchRight=5;
