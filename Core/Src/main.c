@@ -844,10 +844,8 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 
 	char msg[100];
-	sprintf(msg, "Right= Stage: %d, Hip: %.2f, Knee: %.2f |||  Left= Stage: %d, Hip: %.2f, Knee: %.2f\r\n", heelSwitchRight, posF3, posF4, heelSwitchLeft, posF1, posF2);
+	sprintf(msg, "%.4f,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\r\n", ttime, heelSwitchLeft, posF1, posF2, speedF1, speedF2, torqueF1, torqueF2, heelSwitchRight, posF3, posF4, speedF3, speedF4, torqueF3, torqueF4);
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-
 
 }
 
@@ -906,6 +904,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 	ttime = cycle * samplingTime * 1e-3;
+	cycle=cycle+1;
 
 
 	//	***********************************   Left Leg   ***********************************
