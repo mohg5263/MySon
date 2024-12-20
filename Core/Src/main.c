@@ -463,7 +463,7 @@ static void MX_TIM6_Init(void)
   htim6.Instance = TIM6;
   htim6.Init.Prescaler = 100-1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 2400-1;
+  htim6.Init.Period = 16000-1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -844,7 +844,7 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 
 	char msg[100];
-	sprintf(msg, "%.4f,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f,%d,%.4f,%.4f,%.4f,%.4f,%.4f,%.4f\r\n", ttime, heelSwitchLeft, posF1, posF2, speedF1, speedF2, torqueF1, torqueF2, heelSwitchRight, posF3, posF4, speedF3, speedF4, torqueF3, torqueF4);
+	sprintf(msg, "%.4f,%d,%.2f,%.2f,%.2f,%.2f,%d,%.2f,%.2f,%.2f,%.2f\r\n", ttime, heelSwitchLeft, posF1, posF2, torqueF1, torqueF2, heelSwitchRight, posF3, posF4, torqueF3, torqueF4);
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 }
