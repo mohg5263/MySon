@@ -179,7 +179,7 @@ double Kd3;
 double Kp4;
 double Kd4;
 
-int samplingTime = 2;	//ms
+double samplingTime = 2.5;	//ms
 
 double error1, lastError1 = 0;
 double integral1 = 0;
@@ -461,9 +461,9 @@ static void MX_TIM6_Init(void)
 
   /* USER CODE END TIM6_Init 1 */
   htim6.Instance = TIM6;
-  htim6.Init.Prescaler = 100-1;
+  htim6.Init.Prescaler = 4-1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 16000-1;
+  htim6.Init.Period = 50000-1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -497,13 +497,13 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 921600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
   huart2.Init.Mode = UART_MODE_TX_RX;
-  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_RTS_CTS;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_8;
   huart2.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
   huart2.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
   if (HAL_UART_Init(&huart2) != HAL_OK)
@@ -843,9 +843,9 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 	torqueF4 = torque_4;
 
 
-	char msg[100];
-	sprintf(msg, "%.4f,%d,%.2f,%.2f,%.2f,%.2f,%d,%.2f,%.2f,%.2f,%.2f\r\n", ttime, heelSwitchLeft, posF1, posF2, torqueF1, torqueF2, heelSwitchRight, posF3, posF4, torqueF3, torqueF4);
-	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+
+
 
 }
 
@@ -856,6 +856,41 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
+	ttime = cycle * samplingTime * 1e-3;
+	cycle=cycle+1;
+
+
+	char msg[100];
+
+
+	// Scale floating-point variables to integers for efficient processing
+	int ttime_int = (int)(ttime * 10000);       // Scale to 4 decimal places
+	int posF1_int = (int)(posF1 * 100);         // Scale to 2 decimal places
+	int posF2_int = (int)(posF2 * 100);         // Scale to 2 decimal places
+	int speedF1_int = (int)(speedF1 * 100);     // Scale to 2 decimal places
+	int speedF2_int = (int)(speedF2 * 100);     // Scale to 2 decimal places
+	int torqueF1_int = (int)(torqueF1 * 100);   // Scale to 2 decimal places
+	int torqueF2_int = (int)(torqueF2 * 100);   // Scale to 2 decimal places
+	int posF3_int = (int)(posF3 * 100);         // Scale to 2 decimal places
+	int posF4_int = (int)(posF4 * 100);         // Scale to 2 decimal places
+	int speedF3_int = (int)(speedF3 * 100);     // Scale to 2 decimal places
+	int speedF4_int = (int)(speedF4 * 100);     // Scale to 2 decimal places
+	int torqueF3_int = (int)(torqueF3 * 100);   // Scale to 2 decimal places
+	int torqueF4_int = (int)(torqueF4 * 100);   // Scale to 2 decimal places
+
+
+
+	sprintf(msg, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",
+	        ttime_int, heelSwitchLeft, posF1_int, posF2_int, speedF1_int, speedF2_int,
+	        torqueF1_int, torqueF2_int, heelSwitchRight, posF3_int, posF4_int,
+	        speedF3_int, speedF4_int, torqueF3_int, torqueF4_int);
+
+	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+
+
+
 
 
 
@@ -871,13 +906,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		sprintf(msg, "Heel Switch Right Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		}
-
 	}
-
 	lastButtonStateRight = buttonStateRight;
-
-
-
 
 
 
@@ -894,17 +924,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		sprintf(msg, "Heel Switch Left Triggered!" );
 		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 		}
-
 	}
-
 	lastButtonStateLeft = buttonStateLeft;
 
-
-
-
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
-	ttime = cycle * samplingTime * 1e-3;
-	cycle=cycle+1;
 
 
 	//	***********************************   Left Leg   ***********************************
@@ -962,7 +984,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp2=0.5;
 		Kd2=0.2;
 
-		rAngle1 = 10 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = 20 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 110  / 180.0 * M_PI * 65 / 12;
 
 
@@ -1066,7 +1088,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=0.5;
 		Kd4=0.2;
 
-		rAngle3 = 10 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = 20 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 110  / 180.0 * M_PI * 65 / 12;
 
 		if(posF4>40){
@@ -1099,6 +1121,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	previous_heelSwitchRight = heelSwitchRight;
 	previous_heelSwitchLeft = heelSwitchLeft;
+
+
+
 
 
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
