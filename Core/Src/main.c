@@ -932,22 +932,22 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	//	***********************************   Left Leg   ***********************************
 	if (heelSwitchLeft==1) {
 
-		Kp1=1;
+		Kp1=2;
 		Kd1=0.7;
 
-		Kp2=1;
+		Kp2=2;
 		Kd2=0.3;
 
-		rAngle1 = 40 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = 30 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
 	}
 
 	else if (heelSwitchLeft==2) {
 
-		Kp1=1;
+		Kp1=2;
 		Kd1=0.7;
 
-		Kp2=1;
+		Kp2=2;
 		Kd2=0.7;
 
 		rAngle1 = -5 / 180.0 * M_PI * 65 / 12;
@@ -961,10 +961,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchLeft==3) {
 
-		Kp1=3;
+		Kp1=4.5;
 		Kd1=1.5;
 
-		Kp2=1;
+		Kp2=1.5;
 		Kd2=0.7;
 
 		rAngle1 = -45 / 180.0 * M_PI * 65 / 12;
@@ -978,11 +978,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchLeft==4) {
 
-		Kp1=0.5;
-		Kd1=0.2;
+		Kp1=1;
+		Kd1=0.3;
 
-		Kp2=0.5;
-		Kd2=0.2;
+		Kp2=1;
+		Kd2=0.3;
 
 		rAngle1 = 20 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 110  / 180.0 * M_PI * 65 / 12;
@@ -996,11 +996,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchLeft==5) {
 
-		Kp1=0.5;
-		Kd1=0.2;
+		Kp1=1;
+		Kd1=0.4;
 
-		Kp2=0.5;
-		Kd2=0.1;
+		Kp2=1;
+		Kd2=0.2;
 
 		rAngle1 = 90 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = 40  / 180.0 * M_PI * 65 / 12;
@@ -1032,22 +1032,22 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchRight==1) {
 
-		Kp3=1;
+		Kp3=2;
 		Kd3=0.7;
 
-		Kp4=1;
+		Kp4=2;
 		Kd4=0.3;
 
-		rAngle3 = 40 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = 30 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
 	}
 
 	else if (heelSwitchRight==2) {
 
-		Kp3=1;
+		Kp3=2;
 		Kd3=0.7;
 
-		Kp4=1;
+		Kp4=2;
 		Kd4=0.7;
 
 		rAngle3 = -5 / 180.0 * M_PI * 65 / 12;
@@ -1064,10 +1064,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchRight==3) {
 
-		Kp3=3;
+		Kp3=4.5;
 		Kd3=1.5;
 
-		Kp4=1;
+		Kp4=1.5;
 		Kd4=0.7;
 
 		rAngle3 = -45 / 180.0 * M_PI * 65 / 12;
@@ -1082,11 +1082,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchRight==4) {
 
-		Kp3=0.5;
-		Kd3=0.2;
+		Kp3=1;
+		Kd3=0.3;
 
-		Kp4=0.5;
-		Kd4=0.2;
+		Kp4=1;
+		Kd4=0.3;
 
 		rAngle3 = 20 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 110  / 180.0 * M_PI * 65 / 12;
@@ -1099,11 +1099,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	else if (heelSwitchRight==5) {
 
-		Kp3=0.5;
-		Kd3=0.2;
+		Kp3=1;
+		Kd3=0.4;
 
-		Kp4=0.5;
-		Kd4=0.1;
+		Kp4=1;
+		Kd4=0.2;
 
 		rAngle3 = 90 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = 40  / 180.0 * M_PI * 65 / 12;
