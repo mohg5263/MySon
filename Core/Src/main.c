@@ -849,58 +849,59 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 }
 
+
 //1      Waiting Heel Strike
-double KpH1=7;
-double KdH1=1;
+double KpH1=1*7;
+double KdH1=0.7*2;
 double AngleH1=25;
 
-double KpK1=6;
-double KdK1=1;
+double KpK1=1*6;
+double KdK1=0.3*4;
 double AngleK1=-5;
 
 //2     Foot flat
-double KpH2=7;
-double KdH2=1;
+double KpH2=1*7;
+double KdH2=0.7*2;
 double AngleH2=-5;
 
-double KpK2=6;
-double KdK2=1;
+double KpK2=1*6;
+double KdK2=0.7*2;
 double AngleK2=0;
 
 
 //3     Hip extension
-double KpH3=7;
-double KdH3=1;
+double KpH3=3*2;
+double KdH3=1.5;
 double AngleH3=-45;
 double HipTresh3=-20;
 
-double KpK3=6;
-double KdK3=1;
-double AngleK3=20;
+double KpK3=1*6;
+double KdK3=0.7*2;
+double AngleK3=10*2;
 
 
 
 //4     Knee Flexion Contact Avoider
-double KpH4=6;
-double KdH4=1;
-double AngleH4=80;
+double KpH4=0.5*7;
+double KdH4=0.2*5;
+double AngleH4=20*2;
 
 
-double KpK4=5;
-double KdK4=1;
+double KpK4=0.5*1;
+double KdK4=0.2*1;
 double AngleK4=110;
-double KneeTresh4=50;
+double KneeTresh4=40;
 
 
 
 //5     Hip Flexion
-double KpH5=6;
-double KdH5=1;
-double AngleH5=100;
+double KpH5=0.5*10;
+double KdH5=0.2*5;
+double AngleH5=50;
 double HipTresh5=30;
 
-double KpK5=5;
-double KdK5=1;
+double KpK5=0.5*10;
+double KdK5=0.1*10;
 double AngleK5=40;
 
 
@@ -933,7 +934,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-	sprintf(msg, "%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d,%d\r\n",
+	sprintf(msg, "%d,*%d,%d,%d,%d,%d,%d,%d,*%d,%d,%d,%d,%d,%d,%d\r\n",
 	        ttime_int, heelSwitchLeft, posF1_int, posF2_int, speedF1_int, speedF2_int,
 	        torqueF1_int, torqueF2_int, heelSwitchRight, posF3_int, posF4_int,
 	        speedF3_int, speedF4_int, torqueF3_int, torqueF4_int);
