@@ -144,6 +144,10 @@ float rAngle2=0;
 float rAngle3=0;
 float rAngle4=0;
 
+
+
+#define factor 1.5
+#define factorD 1.5
 //********************************************************************************
 
 //switch status
@@ -849,60 +853,59 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 }
 
-
 //1      Waiting Heel Strike
-double KpH1=1;
-double KdH1=0.7;
-double AngleH1=40;
+double KpH1=1.0*factor;
+double KdH1=0.7*factorD;
+double AngleH1=19.0;
 
-double KpK1=1;
-double KdK1=0.3;
-double AngleK1=0;
+double KpK1=1.0*factor;
+double KdK1=0.3*factorD;
+double AngleK1=4.0;
 
 //2     Foot flat
-double KpH2=1;
-double KdH2=0.7;
-double AngleH2=-5;
+double KpH2=1.0*factor;
+double KdH2=0.7*factorD;
+double AngleH2=0.0;
 
-double KpK2=1;
-double KdK2=0.7;
-double AngleK2=0;
+double KpK2=1.0*factor;
+double KdK2=0.7*factorD;
+double AngleK2=11.0;
 
 
 //3     Hip extension
-double KpH3=3;
-double KdH3=1.5;
-double AngleH3=-45;
-double HipTresh3=-23;
+double KpH3=3.0*factor;
+double KdH3=1.5*factorD;
+double AngleH3=-20;
+double HipTresh3=-11.0;
 
-double KpK3=1;
-double KdK3=0.7;
-double AngleK3=10;
+double KpK3=1.0*factor;
+double KdK3=0.7*factorD;
+double AngleK3=19.0;
 
 
 
 //4     Knee Flexion Contact Avoider
-double KpH4=0.5;
-double KdH4=0.2;
-double AngleH4=20;
+double KpH4=1;
+double KdH4=0.1;
+double AngleH4=5;
 
 
-double KpK4=0.5;
-double KdK4=0.2;
-double AngleK4=110;
-double KneeTresh4=40;
+double KpK4=1.5;
+double KdK4=0.1;
+double AngleK4=70;
+double KneeTresh4=30;
 
 
 
 //5     Hip Flexion
-double KpH5=0.5;
-double KdH5=0.2;
-double AngleH5=90;
-double HipTresh5=40;
+double KpH5=0.5*factor;
+double KdH5=0.2*factorD;
+double AngleH5=20;
+double HipTresh5=12;
 
-double KpK5=0.5;
-double KdK5=0.1;
-double AngleK5=40;
+double KpK5=0.5*factor;
+double KdK5=0.1*factorD;
+double AngleK5=64;
 
 
 
