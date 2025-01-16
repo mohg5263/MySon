@@ -866,6 +866,7 @@ double AngleK1=4.0;
 double KpH2=1.0*factor;
 double KdH2=0.7*factorD;
 double AngleH2=0.0;
+double HipTresh2=0.0;
 
 double KpK2=1.0*factor;
 double KdK2=0.7*factorD;
@@ -875,8 +876,8 @@ double AngleK2=11.0;
 //3     Hip extension
 double KpH3=3.0*factor;
 double KdH3=1.5*factorD;
-double AngleH3=-20;
-double HipTresh3=-11.0;
+double AngleH3=-11.0;
+
 
 double KpK3=1.0*factor;
 double KdK3=0.7*factorD;
@@ -1001,6 +1002,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = AngleK1  / 180.0 * M_PI * 65 / 12;
 	}
 
+
+
+
 	else if (heelSwitchLeft==2) {
 
 		Kp1=KpH2;
@@ -1012,10 +1016,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH2  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK2  / 180.0 * M_PI * 65 / 12;
 
-		///  Syncing solved
-		if(previous_heelSwitchRight==1 &&  heelSwitchRight==2){
+		if(posF1<HipTresh2){
 			heelSwitchLeft=3;
 		}
+
 	}
 
 	else if (heelSwitchLeft==3) {
@@ -1029,9 +1033,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH3  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
-		if(posF1<HipTresh3){
-			heelSwitchLeft=4;
+
+		///  Syncing solved
+		if(previous_heelSwitchRight==2 &&  heelSwitchRight==3){
+			heelSwitchLeft=5;
 		}
+
+
 
 	}
 
@@ -1063,6 +1071,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle1 = AngleH5  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
+
+
+
+		posF1 = -position_1    * 180.0 / M_PI / 65 * 12;
+
+
 
 
 		if(posF1>HipTresh5){
@@ -1112,8 +1126,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = AngleH2  / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK2  / 180.0 * M_PI * 65 / 12;
 
-		///  syncing solved
-		if(previous_heelSwitchLeft==1 &&  heelSwitchLeft==2){
+		if(posF3<HipTresh2){
 			heelSwitchRight=3;
 		}
 	}
@@ -1132,11 +1145,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = AngleH3  / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
-
-
-		if(posF3<HipTresh3){
-			heelSwitchRight=4;
+		///  syncing solved
+		if(previous_heelSwitchLeft==2 &&  heelSwitchLeft==3){
+			heelSwitchRight=5;
 		}
+
+
 	}
 
 	else if (heelSwitchRight==4) {
