@@ -145,9 +145,6 @@ float rAngle3=0;
 float rAngle4=0;
 
 
-
-#define factor 1.5
-#define factorD 1.5
 //********************************************************************************
 
 //switch status
@@ -157,6 +154,8 @@ uint8_t lastButtonStateRight = 0;
 //switch status
 uint8_t buttonStateLeft = 0;
 uint8_t lastButtonStateLeft = 0;
+
+
 
 
 
@@ -222,6 +221,14 @@ float currentTime = 0;
 float ttime = 0;
 float ttime1 = 0;
 float ttime2 = 0;
+
+
+
+
+
+
+
+
 
 //********************************************************************************
 
@@ -853,69 +860,85 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 }
 
-//1      Waiting Heel Strike
-double KpH1=1.0*factor;
-double KdH1=0.7*factorD;
-double AngleH1=30.0;
-
-double KpK1=1.0*factor;
-double KdK1=0.3*factorD;
-double AngleK1=4.0;
-
-//2     Foot flat
-double KpH2=1.0*factor;
-double KdH2=0.7*factorD;
-double AngleH2=-10.0;
-double HipTresh2=0;
-
-double KpK2=1.0*factor;
-double KdK2=0.7*factorD;
-double AngleK2=11.0;
-
-
-//3     Hip extension
-double KpH3=3.0*factor;
-double KdH3=1.5*factorD;
-double AngleH3=-11;
-
-
-double KpK3=1.0*factor;
-double KdK3=0.7*factorD;
-double AngleK3=19.0;
 
 
 
-//4     Knee Flexion Contact Avoider
-double KpH4=1;
-double KdH4=0.1;
-double AngleH4=30;
+double factor1=3;
+double factor2=1;
+double factor3=3;
+double factor4=3;
+double factor5=7;
 
-
-double KpK4=1.5;
-double KdK4=0.1;
-double AngleK4=40;
-double KneeTresh4=30;
-
-
-
-//5     Hip Flexion
-double KpH5=0.5*factor;
-double KdH5=0.2*factorD;
-double AngleH5=20;
-double HipTresh5=12;
-
-double KpK5=0.5*factor;
-double KdK5=0.1*factorD;
-double AngleK5=64;
-
-
-
-
+double factorD1=1;
+double factorD2=1;
+double factorD3=2;
+double factorD4=1.5;
+double factorD5=3;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
+
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 	ttime = cycle * samplingTime * 1e-3;
 	cycle=cycle+1;
+
+	//1      Waiting Heel Strike
+	double KpH1=1*factor1;
+	double KdH1=0.7*factorD1;
+	double AngleH1=25;
+
+	double KpK1=1*factor1;
+	double KdK1=0.3*factorD1;
+	double AngleK1=0;
+
+	//2     Foot flat
+	double KpH2=1*factor2;
+	double KdH2=0.7*factorD2;
+	double AngleH2=-5;
+
+	double KpK2=1*factor2;
+	double KdK2=0.7*factorD2;
+	double AngleK2=0;
+
+
+
+
+	//3     Hip extension
+	double KpH3=3*factor3;
+	double KdH3=1.5*factorD3;
+	double AngleH3=-35;
+	double HipTresh3=-23;
+
+	double KpK3=1*factor3;
+	double KdK3=0.7*factorD3;
+	double AngleK3=10;
+
+
+
+	//4     Knee Flexion Contact Avoider
+	double KpH4=1*factor4;
+	double KdH4=0.4*factorD4;
+	double AngleH4=30;
+
+
+	double KpK4=0.5*factor4;
+	double KdK4=0.2*factorD4;
+	double AngleK4=50;
+	double KneeTresh4=40;
+
+
+
+	//5     Hip Flexion
+	double KpH5=0.5*factor5;
+	double KdH5=0.2*factorD5;
+	double AngleH5=60;
+	double HipTresh5=40;
+
+	double KpK5=0.5*factor5;
+	double KdK5=0.1*factorD5;
+	double AngleK5=20;
+
+
+
 
 
 	char msg[100];
@@ -938,11 +961,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-	sprintf(msg, "%.2f,%d,%d\r\n",
-	        ttime, heelSwitchLeft, heelSwitchRight);
+	sprintf(msg, "%d,*%d,%d,%d,%d,%d,%d,%d,*%d,%d,%d,%d,%d,%d,%d\r\n",
+	        ttime_int, heelSwitchLeft, posF1_int, posF2_int, speedF1_int, speedF2_int,
+	        torqueF1_int, torqueF2_int, heelSwitchRight, posF3_int, posF4_int,
+	        speedF3_int, speedF4_int, torqueF3_int, torqueF4_int);
 
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
 
 
 
@@ -986,7 +1010,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-
 	//	***********************************   Left Leg   ***********************************
 	if (heelSwitchLeft==1) {
 
@@ -1011,12 +1034,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH2  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK2  / 180.0 * M_PI * 65 / 12;
 
-
-		if(posF1<HipTresh2){
+		///  Syncing solved
+		if(previous_heelSwitchRight==1 &&  heelSwitchRight==2){
 			heelSwitchLeft=3;
 		}
-
-
 	}
 
 	else if (heelSwitchLeft==3) {
@@ -1030,11 +1051,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH3  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
-		///  Syncing solved
-		if(previous_heelSwitchRight==1 &&  heelSwitchRight==2){
+		if(posF1<HipTresh3){
 			heelSwitchLeft=4;
 		}
-
 
 	}
 
@@ -1115,11 +1134,13 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = AngleH2  / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK2  / 180.0 * M_PI * 65 / 12;
 
-		if(posF3<HipTresh2){
+		///  syncing solved
+		if(previous_heelSwitchLeft==1 &&  heelSwitchLeft==2){
 			heelSwitchRight=3;
 		}
-
 	}
+
+
 
 
 	else if (heelSwitchRight==3) {
@@ -1134,12 +1155,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
 
-		///  syncing solved
-		if(previous_heelSwitchLeft==1 &&  heelSwitchLeft==2){
+
+		if(posF3<HipTresh3){
 			heelSwitchRight=4;
 		}
-
-
 	}
 
 	else if (heelSwitchRight==4) {
