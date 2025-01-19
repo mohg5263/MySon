@@ -144,10 +144,73 @@ float rAngle2=0;
 float rAngle3=0;
 float rAngle4=0;
 
+uint8_t stateLeft = 0;
+uint8_t stateRight = 2;
+
+double hipFactorKp1=1;
+double hipFactorKd1=1;
+
+double hipFactorKp2=1;
+double hipFactorKd2=1;
+
+double hipFactorKp3=1.5;
+double hipFactorKd3=1.5;
+
+double hipFactorKp4=1;
+double hipFactorKd4=1;
+
+double hipFactorKp5=4;
+double hipFactorKd5=2;
 
 
-#define factor 1.5
-#define factorD 1.5
+double kneeFactorKp1=1;
+double kneeFactorKd1=1;
+
+double kneeFactorKp2=1;
+double kneeFactorKd2=1;
+
+double kneeFactorKp3=1.5;
+double kneeFactorKd3=1.5;
+
+double kneeFactorKp4=1;
+double kneeFactorKd4=1;
+
+double kneeFactorKp5=4;
+double kneeFactorKd5=2;
+
+double AngleH1 = 25.0;
+double AngleK1 = 10.0;
+double AngleH2 = 0.0;
+double AngleK2 = 16.0;
+double AngleH3 = -20.0;
+double AngleK3 = 20.0;
+double AngleH4 = 6.0;
+double AngleK4 = 40.0;
+double AngleH5 = 6.0;
+double AngleK5 = 40.0;
+
+// PID variables
+int motorID1 = 1;
+int motorID2 = 2;
+int motorID3 = 3;
+int motorID4 = 4;
+
+int motorActivated1 = 1;
+int motorActivated2 = 1;
+int motorActivated3 = 1;
+int motorActivated4 = 1;
+
+double Kp1;
+double Kd1;
+
+double Kp2;
+double Kd2;
+
+double Kp3;
+double Kd3;
+
+double Kp4;
+double Kd4;
 //********************************************************************************
 
 //switch status
@@ -160,16 +223,6 @@ uint8_t lastButtonStateLeft = 0;
 
 
 
-// PID variables
-int motorID1 = 1;
-int motorID2 = 2;
-int motorID3 = 3;
-int motorID4 = 4;
-
-int motorActivated1 = 1;
-int motorActivated2 = 1;
-int motorActivated3 = 1;
-int motorActivated4 = 1;
 
 double Kp1;
 double Kd1;
@@ -853,60 +906,63 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 }
 
-//1      Waiting Heel Strike
-double KpH1=1.0*factor;
-double KdH1=0.7*factorD;
-double AngleH1=30.0;
-
-double KpK1=1.0*factor;
-double KdK1=0.3*factorD;
-double AngleK1=4.0;
-
-//2     Foot flat
-double KpH2=1.0*factor;
-double KdH2=0.7*factorD;
-double AngleH2=-10.0;
-double HipTresh2=0;
-
-double KpK2=1.0*factor;
-double KdK2=0.7*factorD;
-double AngleK2=11.0;
-
-
-//3     Hip extension
-double KpH3=3.0*factor;
-double KdH3=1.5*factorD;
-double AngleH3=-11;
-
-
-double KpK3=1.0*factor;
-double KdK3=0.7*factorD;
-double AngleK3=19.0;
 
 
 
-//4     Knee Flexion Contact Avoider
-double KpH4=1;
-double KdH4=0.1;
-double AngleH4=30;
-
-
-double KpK4=1.5;
-double KdK4=0.1;
-double AngleK4=40;
-double KneeTresh4=30;
-
-
-
-//5     Hip Flexion
-double KpH5=0.5*factor;
-double KdH5=0.2*factorD;
-double AngleH5=20;
-double HipTresh5=12;
-
-double KpK5=0.5*factor;
-double KdK5=0.1*factorD;
-double AngleK5=64;
+////1      Waiting Heel Strike
+//double KpH1=1.0*factor;
+//double KdH1=0.7*factorD;
+////double AngleH1=30.0;
+//
+//double KpK1=1.0*factor;
+//double KdK1=0.3*factorD;
+////double AngleK1=4.0;
+//
+////2     Foot flat
+//double KpH2=1.0*factor;
+//double KdH2=0.7*factorD;
+////double AngleH2=-10.0;
+////double HipTresh2=0;
+//
+//double KpK2=1.0*factor;
+//double KdK2=0.7*factorD;
+////double AngleK2=11.0;
+//
+//
+////3     Hip extension
+//double KpH3=3.0*factor;
+//double KdH3=1.5*factorD;
+////double AngleH3=-11;
+//
+//
+//double KpK3=1.0*factor;
+//double KdK3=0.7*factorD;
+////double AngleK3=19.0;
+//
+//
+//
+////4     Knee Flexion Contact Avoider
+//double KpH4=1;
+//double KdH4=0.1;
+////double AngleH4=30;
+//
+//
+//double KpK4=1.5;
+//double KdK4=0.1;
+////double AngleK4=40;
+////double KneeTresh4=30;
+//
+//
+//
+////5     Hip Flexion
+//double KpH5=0.5*factor;
+//double KdH5=0.2*factorD;
+////double AngleH5=20;
+////double HipTresh5=12;
+//
+//double KpK5=0.5*factor;
+//double KdK5=0.1*factorD;
+////double AngleK5=64;
 
 
 
@@ -914,11 +970,46 @@ double AngleK5=64;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
-//	ttime = cycle * samplingTime * 1e-3;
-//	cycle=cycle+1;
-//
-//
-//	char msg[100];
+	//1      Waiting Heel Strike
+	double KpH1=1*hipFactorKp1;
+	double KdH1=0.7*hipFactorKd1;
+
+	double KpK1=1*kneeFactorKp1;
+	double KdK1=0.3*kneeFactorKd1;
+
+	//2     Foot flat
+	double KpH2=1*hipFactorKp2;
+	double KdH2=0.7*hipFactorKd2;
+
+	double KpK2=1*kneeFactorKp2;
+	double KdK2=0.7*kneeFactorKd2;
+
+
+
+
+	//3     Hip extension
+	double KpH3=3*hipFactorKp3;
+	double KdH3=1.5*hipFactorKd3;
+//	double HipTresh3=-23;
+
+	double KpK3=1*kneeFactorKp3;
+	double KdK3=0.7*kneeFactorKd3;
+
+
+
+	//4     Knee Flexion Contact Avoider
+	double KpH4=0.5*hipFactorKp4;
+	double KdH4=0.2*hipFactorKd4;
+
+
+	double KpK4=0.5*kneeFactorKp4;
+	double KdK4=0.2*kneeFactorKd4;
+//	double KneeTresh4=40;
+
+
+
+
+	char msg[100];
 //
 //
 //	// Scale floating-point variables to integers for efficient processing
@@ -938,10 +1029,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //
 //
 //
-//	sprintf(msg, "%.2f,%d,%d\r\n",
-//	        ttime, heelSwitchLeft, heelSwitchRight);
-//
-//	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+	sprintf(msg, "%d,%d\r\n",
+	        stateLeft, stateRight);
+
+	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 //
 //
 //
@@ -982,59 +1073,33 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //	}
 //	lastButtonStateLeft = buttonStateLeft;
 
-	static uint8_t stateLeft = 0;
+
+	static uint8_t firstCall = 1;
+	if(firstCall)
+	{
+		firstCall = 0;
+		while(!HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10));
+	}
+
+
 	switch(stateLeft)
 	{
 	case 0:
+		Kp1=0;
+		Kd1=0;
 
-		break;
+		Kp2=0;
+		Kd2=0;
 
-	case 1:
-		Kp1=KpH2;
-		Kd1=KdH2;
-
-		Kp2=KpK2;
-		Kd2=KdK2;
-
-		rAngle1 = AngleH2  / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK2  / 180.0 * M_PI * 65 / 12;
+		rAngle1 = 0  / 180.0 * M_PI * 65 / 12;
+		rAngle2 = 0  / 180.0 * M_PI * 65 / 12;
 
 		if(posF1 < 0)
-			stateLeft = 2;
-
-		break;
-
-	case 2:
-		Kp1=KpH3;
-		Kd1=KdH3;
-
-		Kp2=KpK3;
-		Kd2=KdK3;
-
-		rAngle1 = AngleH3  / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
-
-		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
-			stateLeft = 3;
-
-		break;
-
-	case 3:
-		Kp1=KpH4;
-		Kd1=KdH4;
-
-		Kp2=KpK4;
-		Kd2=KdK4;
-
-		rAngle1 = AngleH4  / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
-
-		if(speedF2 < 0)
 			stateLeft = 4;
 
 		break;
 
-	case 4:
+	case 1:
 		Kp1=KpH1;
 		Kd1=KdH1;
 
@@ -1045,64 +1110,62 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = AngleK1  / 180.0 * M_PI * 65 / 12;
 
 		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11))
-			stateLeft = 1;
-
-		break;
-	}
-
-	static uint8_t stateRight = 0;
-	switch(stateRight)
-	{
-	case 0:
-
-		break;
-
-	case 1:
-		Kp3=KpH2;
-		Kd3=KdH2;
-
-		Kp4=KpK2;
-		Kd4=KdK2;
-
-		rAngle3 = AngleH2  / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK2  / 180.0 * M_PI * 65 / 12;
-
-		if(posF1 < 0)
-			stateRight = 2;
+			stateLeft = 2;
 
 		break;
 
 	case 2:
-		Kp3=KpH3;
-		Kd3=KdH3;
+		Kp1=KpH2;
+		Kd1=KdH2;
 
-		Kp4=KpK3;
-		Kd4=KdK3;
+		Kp2=KpK2;
+		Kd2=KdK2;
 
-		rAngle3 = AngleH3  / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
+		rAngle1 = AngleH2  / 180.0 * M_PI * 65 / 12;
+		rAngle2 = AngleK2  / 180.0 * M_PI * 65 / 12;
 
-		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11))
-			stateRight = 3;
+		if(posF1 < 0)
+			stateLeft = 3;
 
 		break;
 
 	case 3:
-		Kp3=KpH4;
-		Kd3=KdH4;
+		Kp1=KpH3;
+		Kd1=KdH3;
 
-		Kp4=KpK4;
-		Kd4=KdK4;
+		Kp2=KpK3;
+		Kd2=KdK3;
 
-		rAngle3 = AngleH4  / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
+		rAngle1 = AngleH3  / 180.0 * M_PI * 65 / 12;
+		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
-		if(speedF2 < 0)
-			stateRight = 4;
+		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
+			stateLeft = 4;
 
 		break;
 
 	case 4:
+		Kp1=KpH4;
+		Kd1=KdH4;
+
+		Kp2=KpK4;
+		Kd2=KdK4;
+
+		rAngle1 = AngleH4  / 180.0 * M_PI * 65 / 12;
+		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
+
+		if(speedF2 < 0)
+			stateLeft = 1;
+
+		break;}
+
+
+	switch(stateRight)
+	{
+	case 0:
+		break;
+
+	case 1:
 		Kp3=KpH1;
 		Kd3=KdH1;
 
@@ -1113,10 +1176,55 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = AngleK1  / 180.0 * M_PI * 65 / 12;
 
 		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
+			stateRight = 2;
+
+		break;
+
+	case 2:
+		Kp3=KpH2;
+		Kd3=KdH2;
+
+		Kp4=KpK2;
+		Kd4=KdK2;
+
+		rAngle3 = AngleH2  / 180.0 * M_PI * 65 / 12;
+		rAngle4 = AngleK2  / 180.0 * M_PI * 65 / 12;
+
+		if(posF3 < 0)
+			stateRight = 3;
+
+		break;
+
+	case 3:
+		Kp3=KpH3;
+		Kd3=KdH3;
+
+		Kp4=KpK3;
+		Kd4=KdK3;
+
+		rAngle3 = AngleH3  / 180.0 * M_PI * 65 / 12;
+		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
+
+		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11))
+			stateRight = 4;
+
+		break;
+
+	case 4:
+		Kp3=KpH4;
+		Kd3=KdH4;
+
+		Kp4=KpK4;
+		Kd4=KdK4;
+
+		rAngle3 = AngleH4  / 180.0 * M_PI * 65 / 12;
+		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
+
+		if(speedF4 < 0)
 			stateRight = 1;
 
 		break;
-	}
+}
 
 
 
