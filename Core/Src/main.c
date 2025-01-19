@@ -914,94 +914,82 @@ double AngleK5=64;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
-	ttime = cycle * samplingTime * 1e-3;
-	cycle=cycle+1;
+//	ttime = cycle * samplingTime * 1e-3;
+//	cycle=cycle+1;
+//
+//
+//	char msg[100];
+//
+//
+//	// Scale floating-point variables to integers for efficient processing
+//	int ttime_int = (int)(ttime * 10000);       // Scale to 4 decimal places
+//	int posF1_int = (int)(posF1 * 100);         // Scale to 2 decimal places
+//	int posF2_int = (int)(posF2 * 100);         // Scale to 2 decimal places
+//	int speedF1_int = (int)(speedF1 * 100);     // Scale to 2 decimal places
+//	int speedF2_int = (int)(speedF2 * 100);     // Scale to 2 decimal places
+//	int torqueF1_int = (int)(torqueF1 * 100);   // Scale to 2 decimal places
+//	int torqueF2_int = (int)(torqueF2 * 100);   // Scale to 2 decimal places
+//	int posF3_int = (int)(posF3 * 100);         // Scale to 2 decimal places
+//	int posF4_int = (int)(posF4 * 100);         // Scale to 2 decimal places
+//	int speedF3_int = (int)(speedF3 * 100);     // Scale to 2 decimal places
+//	int speedF4_int = (int)(speedF4 * 100);     // Scale to 2 decimal places
+//	int torqueF3_int = (int)(torqueF3 * 100);   // Scale to 2 decimal places
+//	int torqueF4_int = (int)(torqueF4 * 100);   // Scale to 2 decimal places
+//
+//
+//
+//	sprintf(msg, "%.2f,%d,%d\r\n",
+//	        ttime, heelSwitchLeft, heelSwitchRight);
+//
+//	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+//
+//
+//
+//
+//
+//
+//
+//	static uint8_t lastButtonStateRight = GPIO_PIN_RESET; // Initially not pressed
+//
+//	uint8_t buttonStateRight = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10);
+//
+//	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
+//		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+//		if (heelSwitchRight==0 || heelSwitchRight==1) {
+//		heelSwitchRight=heelSwitchRight+1;
+//		char msg[50];
+//		sprintf(msg, "Heel Switch Right Triggered!" );
+//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+//		}
+//	}
+//	lastButtonStateRight = buttonStateRight;
+//
+//
+//
+//
+//	static uint8_t lastButtonStateLeft = GPIO_PIN_RESET; // Initially not pressed
+//
+//	uint8_t buttonStateLeft = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11);
+//
+//	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
+//		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
+//		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
+//		heelSwitchLeft=heelSwitchLeft+1;
+//		char msg[50];
+//		sprintf(msg, "Heel Switch Left Triggered!" );
+//		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+//		}
+//	}
+//	lastButtonStateLeft = buttonStateLeft;
 
+	static uint8_t stateLeft = 0;
+	switch(stateLeft)
+	{
+	case 0:
 
-	char msg[100];
+		break;
 
-
-	// Scale floating-point variables to integers for efficient processing
-	int ttime_int = (int)(ttime * 10000);       // Scale to 4 decimal places
-	int posF1_int = (int)(posF1 * 100);         // Scale to 2 decimal places
-	int posF2_int = (int)(posF2 * 100);         // Scale to 2 decimal places
-	int speedF1_int = (int)(speedF1 * 100);     // Scale to 2 decimal places
-	int speedF2_int = (int)(speedF2 * 100);     // Scale to 2 decimal places
-	int torqueF1_int = (int)(torqueF1 * 100);   // Scale to 2 decimal places
-	int torqueF2_int = (int)(torqueF2 * 100);   // Scale to 2 decimal places
-	int posF3_int = (int)(posF3 * 100);         // Scale to 2 decimal places
-	int posF4_int = (int)(posF4 * 100);         // Scale to 2 decimal places
-	int speedF3_int = (int)(speedF3 * 100);     // Scale to 2 decimal places
-	int speedF4_int = (int)(speedF4 * 100);     // Scale to 2 decimal places
-	int torqueF3_int = (int)(torqueF3 * 100);   // Scale to 2 decimal places
-	int torqueF4_int = (int)(torqueF4 * 100);   // Scale to 2 decimal places
-
-
-
-	sprintf(msg, "%.2f,%d,%d\r\n",
-	        ttime, heelSwitchLeft, heelSwitchRight);
-
-	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-
-
-
-
-
-
-	static uint8_t lastButtonStateRight = GPIO_PIN_RESET; // Initially not pressed
-
-	uint8_t buttonStateRight = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10);
-
-	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchRight==0 || heelSwitchRight==1) {
-		heelSwitchRight=heelSwitchRight+1;
-		char msg[50];
-		sprintf(msg, "Heel Switch Right Triggered!" );
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-		}
-	}
-	lastButtonStateRight = buttonStateRight;
-
-
-
-
-	static uint8_t lastButtonStateLeft = GPIO_PIN_RESET; // Initially not pressed
-
-	uint8_t buttonStateLeft = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11);
-
-	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
-		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
-		heelSwitchLeft=heelSwitchLeft+1;
-		char msg[50];
-		sprintf(msg, "Heel Switch Left Triggered!" );
-		HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-		}
-	}
-	lastButtonStateLeft = buttonStateLeft;
-
-
-
-
-
-
-	//	***********************************   Left Leg   ***********************************
-	if (heelSwitchLeft==1) {
-
-		Kp1=KpH1;
-		Kd1=KdH1;
-
-		Kp2=KpK1;
-		Kd2=KdK1;
-
-		rAngle1 = AngleH1  / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK1  / 180.0 * M_PI * 65 / 12;
-	}
-
-	else if (heelSwitchLeft==2) {
-
+	case 1:
 		Kp1=KpH2;
 		Kd1=KdH2;
 
@@ -1011,16 +999,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH2  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK2  / 180.0 * M_PI * 65 / 12;
 
+		if(posF1 < 0)
+			stateLeft = 2;
 
-		if(posF1<HipTresh2){
-			heelSwitchLeft=3;
-		}
+		break;
 
-
-	}
-
-	else if (heelSwitchLeft==3) {
-
+	case 2:
 		Kp1=KpH3;
 		Kd1=KdH3;
 
@@ -1030,16 +1014,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH3  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
-		///  Syncing solved
-		if(previous_heelSwitchRight==1 &&  heelSwitchRight==2){
-			heelSwitchLeft=4;
-		}
+		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
+			stateLeft = 3;
 
+		break;
 
-	}
-
-	else if (heelSwitchLeft==4) {
-
+	case 3:
 		Kp1=KpH4;
 		Kd1=KdH4;
 
@@ -1049,63 +1029,35 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH4  / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
+		if(speedF2 < 0)
+			stateLeft = 4;
 
-		if(posF2>KneeTresh4){
-			heelSwitchLeft=5;
+		break;
 
-		}
+	case 4:
+		Kp1=KpH1;
+		Kd1=KdH1;
+
+		Kp2=KpK1;
+		Kd2=KdK1;
+
+		rAngle1 = AngleH1  / 180.0 * M_PI * 65 / 12;
+		rAngle2 = AngleK1  / 180.0 * M_PI * 65 / 12;
+
+		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11))
+			stateLeft = 1;
+
+		break;
 	}
 
-	else if (heelSwitchLeft==5) {
+	static uint8_t stateRight = 0;
+	switch(stateRight)
+	{
+	case 0:
 
-		Kp1=KpH5;
-		Kd1=KdH5;
+		break;
 
-		Kp2=KpK5;
-		Kd2=KdK5;
-
-		rAngle1 = AngleH5  / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
-
-
-		if(posF1>HipTresh5){
-			heelSwitchLeft=1;
-
-		}
-	}
-
-
-
-
-
-//	***********************************   Right Leg   ***********************************
-	if (heelSwitchRight==0) {
-
-		Kp3=2;
-		Kd3=0.7;
-
-		Kp4=2;
-		Kd4=0.3;
-
-		rAngle3 = 0 / 180.0 * M_PI * 65 / 12;
-		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
-	}
-
-
-	else if (heelSwitchRight==1) {
-
-		Kp3=KpH1;
-		Kd3=KdH1;
-
-		Kp4=KpK1;
-		Kd4=KdK1;
-
-		rAngle3 = AngleH1  / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK1  / 180.0 * M_PI * 65 / 12;
-	}
-
-	else if (heelSwitchRight==2) {
-
+	case 1:
 		Kp3=KpH2;
 		Kd3=KdH2;
 
@@ -1115,15 +1067,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = AngleH2  / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK2  / 180.0 * M_PI * 65 / 12;
 
-		if(posF3<HipTresh2){
-			heelSwitchRight=3;
-		}
+		if(posF1 < 0)
+			stateRight = 2;
 
-	}
+		break;
 
-
-	else if (heelSwitchRight==3) {
-
+	case 2:
 		Kp3=KpH3;
 		Kd3=KdH3;
 
@@ -1133,17 +1082,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = AngleH3  / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
+		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_11))
+			stateRight = 3;
 
-		///  syncing solved
-		if(previous_heelSwitchLeft==1 &&  heelSwitchLeft==2){
-			heelSwitchRight=4;
-		}
+		break;
 
-
-	}
-
-	else if (heelSwitchRight==4) {
-
+	case 3:
 		Kp3=KpH4;
 		Kd3=KdH4;
 
@@ -1153,27 +1097,217 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = AngleH4  / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
-		if(posF4>KneeTresh4){
-			heelSwitchRight=5;
-		}
+		if(speedF2 < 0)
+			stateRight = 4;
+
+		break;
+
+	case 4:
+		Kp3=KpH1;
+		Kd3=KdH1;
+
+		Kp4=KpK1;
+		Kd4=KdK1;
+
+		rAngle3 = AngleH1  / 180.0 * M_PI * 65 / 12;
+		rAngle4 = AngleK1  / 180.0 * M_PI * 65 / 12;
+
+		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_10))
+			stateRight = 1;
+
+		break;
 	}
 
 
-	else if (heelSwitchRight==5) {
 
-		Kp3=KpH5;
-		Kd3=KdH5;
 
-		Kp4=KpK5;
-		Kd4=KdK5;
-
-		rAngle3 = AngleH5  / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
-
-		if(posF3>HipTresh5){
-			heelSwitchRight=1;
-		}
-	}
+//	//	***********************************   Left Leg   ***********************************
+//	if (heelSwitchLeft==1) {
+//
+//		Kp1=KpH1;
+//		Kd1=KdH1;
+//
+//		Kp2=KpK1;
+//		Kd2=KdK1;
+//
+//		rAngle1 = AngleH1  / 180.0 * M_PI * 65 / 12;
+//		rAngle2 = AngleK1  / 180.0 * M_PI * 65 / 12;
+//	}
+//
+//	else if (heelSwitchLeft==2) {
+//
+//		Kp1=KpH2;
+//		Kd1=KdH2;
+//
+//		Kp2=KpK2;
+//		Kd2=KdK2;
+//
+//		rAngle1 = AngleH2  / 180.0 * M_PI * 65 / 12;
+//		rAngle2 = AngleK2  / 180.0 * M_PI * 65 / 12;
+//
+//
+//		if(posF1<HipTresh2){
+//			heelSwitchLeft=3;
+//		}
+//
+//
+//	}
+//
+//	else if (heelSwitchLeft==3) {
+//
+//		Kp1=KpH3;
+//		Kd1=KdH3;
+//
+//		Kp2=KpK3;
+//		Kd2=KdK3;
+//
+//		rAngle1 = AngleH3  / 180.0 * M_PI * 65 / 12;
+//		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
+//
+//		///  Syncing solved
+//		if(previous_heelSwitchRight==1 &&  heelSwitchRight==2){
+//			heelSwitchLeft=4;
+//		}
+//
+//
+//	}
+//
+//	else if (heelSwitchLeft==4) {
+//
+//		Kp1=KpH4;
+//		Kd1=KdH4;
+//
+//		Kp2=KpK4;
+//		Kd2=KdK4;
+//
+//		rAngle1 = AngleH4  / 180.0 * M_PI * 65 / 12;
+//		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
+//
+//
+//		if(posF2>KneeTresh4){
+//			heelSwitchLeft=5;
+//
+//		}
+//	}
+//
+//	else if (heelSwitchLeft==5) {
+//
+//		Kp1=KpH5;
+//		Kd1=KdH5;
+//
+//		Kp2=KpK5;
+//		Kd2=KdK5;
+//
+//		rAngle1 = AngleH5  / 180.0 * M_PI * 65 / 12;
+//		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
+//
+//
+//		if(posF1>HipTresh5){
+//			heelSwitchLeft=1;
+//
+//		}
+//	}
+//
+//
+//
+//
+//
+////	***********************************   Right Leg   ***********************************
+//	if (heelSwitchRight==0) {
+//
+//		Kp3=2;
+//		Kd3=0.7;
+//
+//		Kp4=2;
+//		Kd4=0.3;
+//
+//		rAngle3 = 0 / 180.0 * M_PI * 65 / 12;
+//		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
+//	}
+//
+//
+//	else if (heelSwitchRight==1) {
+//
+//		Kp3=KpH1;
+//		Kd3=KdH1;
+//
+//		Kp4=KpK1;
+//		Kd4=KdK1;
+//
+//		rAngle3 = AngleH1  / 180.0 * M_PI * 65 / 12;
+//		rAngle4 = AngleK1  / 180.0 * M_PI * 65 / 12;
+//	}
+//
+//	else if (heelSwitchRight==2) {
+//
+//		Kp3=KpH2;
+//		Kd3=KdH2;
+//
+//		Kp4=KpK2;
+//		Kd4=KdK2;
+//
+//		rAngle3 = AngleH2  / 180.0 * M_PI * 65 / 12;
+//		rAngle4 = AngleK2  / 180.0 * M_PI * 65 / 12;
+//
+//		if(posF3<HipTresh2){
+//			heelSwitchRight=3;
+//		}
+//
+//	}
+//
+//
+//	else if (heelSwitchRight==3) {
+//
+//		Kp3=KpH3;
+//		Kd3=KdH3;
+//
+//		Kp4=KpK3;
+//		Kd4=KdK3;
+//
+//		rAngle3 = AngleH3  / 180.0 * M_PI * 65 / 12;
+//		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
+//
+//
+//		///  syncing solved
+//		if(previous_heelSwitchLeft==1 &&  heelSwitchLeft==2){
+//			heelSwitchRight=4;
+//		}
+//
+//
+//	}
+//
+//	else if (heelSwitchRight==4) {
+//
+//		Kp3=KpH4;
+//		Kd3=KdH4;
+//
+//		Kp4=KpK4;
+//		Kd4=KdK4;
+//
+//		rAngle3 = AngleH4  / 180.0 * M_PI * 65 / 12;
+//		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
+//
+//		if(posF4>KneeTresh4){
+//			heelSwitchRight=5;
+//		}
+//	}
+//
+//
+//	else if (heelSwitchRight==5) {
+//
+//		Kp3=KpH5;
+//		Kd3=KdH5;
+//
+//		Kp4=KpK5;
+//		Kd4=KdK5;
+//
+//		rAngle3 = AngleH5  / 180.0 * M_PI * 65 / 12;
+//		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
+//
+//		if(posF3>HipTresh5){
+//			heelSwitchRight=1;
+//		}
+//	}
 
 
 
@@ -1182,8 +1316,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
 
-	previous_heelSwitchRight = heelSwitchRight;
-	previous_heelSwitchLeft = heelSwitchLeft;
+//	previous_heelSwitchRight = heelSwitchRight;
+//	previous_heelSwitchLeft = heelSwitchLeft;
 
 
 
