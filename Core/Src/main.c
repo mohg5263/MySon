@@ -97,37 +97,7 @@ uint8_t RxData[8];	//08 bytes of data receive array, data type dictated by HAL
 
 uint32_t TxMailbox;	//data type dictated by HAL
 
-double hipFactorKp1=1;
-double hipFactorKd1=1;
 
-double hipFactorKp2=1;
-double hipFactorKd2=1;
-double hipFactorKp3=1;
-double hipFactorKd3=1;
-double hipFactorKp4=1;
-double hipFactorKd4=1;
-double hipFactorKp5=1;
-double hipFactorKd5=1;
-double kneeFactorKp1=1;
-double kneeFactorKd1=1;
-double kneeFactorKp2=1;
-double kneeFactorKd2=1;
-double kneeFactorKp3=1;
-double kneeFactorKd3=1;
-double kneeFactorKp4=1;
-double kneeFactorKd4=1;
-double kneeFactorKp5=1;
-double kneeFactorKd5=1;
-double AngleH1 = 40;
-double AngleK1 = 0;
-double AngleH2 = -5;
-double AngleK2 = 0;
-double AngleH3 = -23;
-double AngleK3 = 10;
-double AngleH4 = 20;
-double AngleK4 = 40;
-double AngleH5 = 90;
-double AngleK5 = 40;
 
 
 int heelSwitchLeft=2;
@@ -884,7 +854,20 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 }
 
 
+double hipFactorKp1=1;
+double hipFactorKd1=1;
 
+
+double AngleH1 = 40;
+double AngleK1 = 0;
+double AngleH2 = -5;
+double AngleK2 = 0;
+double AngleH3 = -23;
+double AngleK3 = 10;
+double AngleH4 = 20;
+double AngleK4 = 40;
+double AngleH5 = 90;
+double AngleK5 = 40;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
@@ -941,32 +924,31 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 	//1      Waiting Heel Strike
-	double KpH1=1*hipFactorKp1;
-	double KdH1=0.7*hipFactorKd1;
-	double KpK1=1*kneeFactorKp1;
-	double KdK1=0.3*kneeFactorKd1;
+	double KpH1=1;
+	double KdH1=0.7;
+	double KpK1=1;
+	double KdK1=0.3;
 	//2     Foot flat
-	double KpH2=1*hipFactorKp2;
-	double KdH2=0.7*hipFactorKd2;
-	double KpK2=1*kneeFactorKp2;
-	double KdK2=0.7*kneeFactorKd2;
+	double KpH2=1;
+	double KdH2=0.7;
+	double KpK2=1;
+	double KdK2=0.7;
 	//3     Hip extension
-	double KpH3=3*hipFactorKp3;
-	double KdH3=1.5*hipFactorKd3;
-	double HipTresh3=-23;
-	double KpK3=1*kneeFactorKp3;
-	double KdK3=0.7*kneeFactorKd3;
+	double KpH3=3;
+	double KdH3=1.5;
+	double KpK3=1;
+	double KdK3=0.7;
 	//4     Knee Flexion Contact Avoider
-	double KpH4=0.5*hipFactorKp4;
-	double KdH4=0.2*hipFactorKd4;
-	double KpK4=2*kneeFactorKp4;
-	double KdK4=0.2*kneeFactorKd4;
+	double KpH4=0.5;
+	double KdH4=0.2;
+	double KpK4=2;
+	double KdK4=0.2;
 	//5     Hip Flexion
-	double KpH5=0.5*hipFactorKp5;
-	double KdH5=0.2*hipFactorKd5;
+	double KpH5=0.5;
+	double KdH5=0.2;
 	double HipTresh5=30;
-	double KpK5=0.5*kneeFactorKp5;
-	double KdK5=0.1*kneeFactorKd5;
+	double KpK5=0.5;
+	double KdK5=0.1;
 
 
 
