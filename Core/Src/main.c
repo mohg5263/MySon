@@ -866,7 +866,7 @@ double AngleH3 = -23;
 double AngleK3 = 10;
 double AngleH4 = 20;
 double AngleK4 = 40;
-double AngleH5 = 90;
+double AngleH5 = 30;
 double AngleK5 = 40;
 
 //1      Waiting Heel Strike
@@ -890,7 +890,7 @@ double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
 //5     Hip Flexion
-double KpH5=0.5;
+double KpH5=2;
 double KdH5=0.2;
 double HipTresh5=30;
 double KpK5=0.5;
@@ -1038,7 +1038,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
 
 
-		if(posF1>HipTresh5){
+		if(-1<speedF1 && speedF1<1 && posF1>25){
 			heelSwitchLeft=1;
 
 		}
@@ -1139,7 +1139,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 		rAngle3 = AngleH5 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
-		if(posF3>HipTresh5){
+		if(-1<speedF3 && speedF3<1 && posF3>25){
 			heelSwitchRight=1;
 		}
 	}
