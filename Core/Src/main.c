@@ -122,10 +122,10 @@ double AngleH1 = 40;
 double AngleK1 = 0;
 double AngleH2 = -5;
 double AngleK2 = 0;
-double AngleH3 = -45;
+double AngleH3 = -23;
 double AngleK3 = 10;
 double AngleH4 = 20;
-double AngleK4 = 110;
+double AngleK4 = 40;
 double AngleH5 = 90;
 double AngleK5 = 40;
 
@@ -886,9 +886,6 @@ void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 
 
-
-
-
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 //	ttime = cycle * samplingTime * 1e-3;
@@ -962,9 +959,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	//4     Knee Flexion Contact Avoider
 	double KpH4=0.5*hipFactorKp4;
 	double KdH4=0.2*hipFactorKd4;
-	double KpK4=0.5*kneeFactorKp4;
+	double KpK4=2*kneeFactorKp4;
 	double KdK4=0.2*kneeFactorKd4;
-	double KneeTresh4=40;
 	//5     Hip Flexion
 	double KpH5=0.5*hipFactorKp5;
 	double KdH5=0.2*hipFactorKd5;
@@ -1018,10 +1014,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp2=KpK3;
 		Kd2=KdK3;
 
-		rAngle1 = AngleH3 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = -23 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
-		if(posF1<HipTresh3){
+		if(-1<speedF1 && speedF1<1 && posF1<-15){
 			heelSwitchLeft=4;
 		}
 
@@ -1039,7 +1035,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
 
-		if(posF2>KneeTresh4){
+		if(-1<speedF2 && speedF2<1 && posF2>30){
 			heelSwitchLeft=5;
 
 		}
@@ -1121,12 +1117,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK3;
 		Kd4=KdK3;
 
-		rAngle3 = AngleH3 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = -23 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
 
 
-		if(posF3<HipTresh3){
+		if(-1<speedF3 && speedF3<1 && posF3<-15){
 			heelSwitchRight=4;
 		}
 	}
@@ -1142,7 +1138,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle3 = AngleH4 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
-		if(posF4>KneeTresh4){
+		if(-1<speedF4 && speedF4<1 && posF4>30){
 			heelSwitchRight=5;
 		}
 	}
