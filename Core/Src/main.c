@@ -869,6 +869,35 @@ double AngleK4 = 40;
 double AngleH5 = 90;
 double AngleK5 = 40;
 
+//1      Waiting Heel Strike
+double KpH1=1;
+double KdH1=0.7;
+double KpK1=1;
+double KdK1=0.3;
+//2     Foot flat
+double KpH2=1;
+double KdH2=0.7;
+double KpK2=1;
+double KdK2=0.7;
+//3     Hip extension
+double KpH3=3;
+double KdH3=1.5;
+double KpK3=1;
+double KdK3=0.7;
+//4     Knee Flexion Contact Avoider
+double KpH4=0.5;
+double KdH4=0.2;
+double KpK4=3;
+double KdK4=0.2;
+//5     Hip Flexion
+double KpH5=0.5;
+double KdH5=0.2;
+double HipTresh5=30;
+double KpK5=0.5;
+double KdK5=0.1;
+
+
+
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 //	ttime = cycle * samplingTime * 1e-3;
@@ -923,32 +952,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-	//1      Waiting Heel Strike
-	double KpH1=1;
-	double KdH1=0.7;
-	double KpK1=1;
-	double KdK1=0.3;
-	//2     Foot flat
-	double KpH2=1;
-	double KdH2=0.7;
-	double KpK2=1;
-	double KdK2=0.7;
-	//3     Hip extension
-	double KpH3=3;
-	double KdH3=1.5;
-	double KpK3=1;
-	double KdK3=0.7;
-	//4     Knee Flexion Contact Avoider
-	double KpH4=0.5;
-	double KdH4=0.2;
-	double KpK4=2;
-	double KdK4=0.2;
-	//5     Hip Flexion
-	double KpH5=0.5;
-	double KdH5=0.2;
-	double HipTresh5=30;
-	double KpK5=0.5;
-	double KdK5=0.1;
 
 
 
@@ -996,7 +999,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp2=KpK3;
 		Kd2=KdK3;
 
-		rAngle1 = -23 / 180.0 * M_PI * 65 / 12;
+		rAngle1 = AngleH3 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
 		if(-1<speedF1 && speedF1<1 && posF1<-15){
@@ -1099,7 +1102,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK3;
 		Kd4=KdK3;
 
-		rAngle3 = -23 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = AngleH3 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
 
