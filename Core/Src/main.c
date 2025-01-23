@@ -864,9 +864,9 @@ double AngleH2 = -5;
 double AngleK2 = 0;
 double AngleH3 = -23;
 double AngleK3 = 10;
-double AngleH4 = 20;
+double AngleH4 = 40;
 double AngleK4 = 40;
-double AngleH5 = 20;
+double AngleH5 = 40;
 double AngleK5 = 40;
 
 double tolerance=5;
@@ -894,7 +894,7 @@ double KdK4=0.2;
 //5     Hip Flexion
 double KpH5=3;
 double KdH5=0.2;
-double KpK5=2;
+double KpK5=0.5;
 double KdK5=0.2;
 
 
@@ -1022,7 +1022,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 		if(-1<speedF2 && speedF2<1 && posF2>(AngleK4-tolerance)){
-			heelSwitchLeft=5;
+			heelSwitchLeft=1;
 
 		}
 	}
@@ -1126,7 +1126,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
 		if(-1<speedF4 && speedF4<1 && posF4>(AngleH4-tolerance)){
-			heelSwitchRight=5;
+			heelSwitchRight=1;
 		}
 	}
 
