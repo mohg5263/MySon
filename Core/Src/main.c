@@ -883,11 +883,11 @@ double KpK2=1;
 double KdK2=0.7;
 //3     Hip extension
 double KpH3=3;
-double KdH3=1.5;
+double KdH3=0.5;
 double KpK3=1;
-double KdK3=0.7;
+double KdK3=0.2;
 //4     Knee Flexion Contact Avoider
-double KpH4=0.5;
+double KpH4=2;
 double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
@@ -1090,6 +1090,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if(previous_heelSwitchLeft==1 &&  heelSwitchLeft==2){
 			heelSwitchRight=3;
 		}
+
 	}
 
 
@@ -1103,12 +1104,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK3;
 		Kd4=KdK3;
 
-		rAngle3 = AngleH3 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = (AngleH3-tolerance) / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
 
 
-		if(-1<speedF3 && speedF3<1 && posF3<-15){
+		if(-1<speedF3 && speedF3<1 && posF3<AngleH3){
 			heelSwitchRight=4;
 		}
 	}
@@ -1121,10 +1122,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK4;
 		Kd4=KdK4;
 
-		rAngle3 = AngleH4 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = (AngleH4+tolerance) / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF4 && speedF4<1 && posF4>30){
+		if(-1<speedF4 && speedF4<1 && posF4>AngleH4){
 			heelSwitchRight=5;
 		}
 	}
@@ -1138,9 +1139,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK5;
 		Kd4=KdK5;
 
-		rAngle3 = AngleH5 / 180.0 * M_PI * 65 / 12;
+		rAngle3 = (AngleH5+tolerance) / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
-		if(-1<speedF3 && speedF3<1 && posF3>25){
+		if(-1<speedF3 && speedF3<1 && posF3>AngleH5){
 			heelSwitchRight=1;
 		}
 	}
