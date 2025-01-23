@@ -892,10 +892,10 @@ double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
 //5     Hip Flexion
-double KpH5=2;
+double KpH5=3;
 double KdH5=0.2;
-double KpK5=0.5;
-double KdK5=0.1;
+double KpK5=2;
+double KdK5=0.2;
 
 
 
@@ -1000,10 +1000,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp2=KpK3;
 		Kd2=KdK3;
 
-		rAngle1 = (AngleH3-tolerance) / 180.0 * M_PI * 65 / 12;
+		rAngle1 = AngleH3 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF1 && speedF1<1 && posF1<AngleH3){
+		if(-1<speedF1 && speedF1<1 && posF1<(AngleH3+tolerance)){
 			heelSwitchLeft=4;
 		}
 
@@ -1018,10 +1018,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kd2=KdK4;
 
 		rAngle1 = AngleH4 / 180.0 * M_PI * 65 / 12;
-		rAngle2 = (AngleK4+tolerance)  / 180.0 * M_PI * 65 / 12;
+		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
 
-		if(-1<speedF2 && speedF2<1 && posF2>AngleK4){
+		if(-1<speedF2 && speedF2<1 && posF2>(AngleK4-tolerance)){
 			heelSwitchLeft=5;
 
 		}
@@ -1035,11 +1035,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp2=KpK5;
 		Kd2=KdK5;
 
-		rAngle1 = (AngleH5+tolerance) / 180.0 * M_PI * 65 / 12;
+		rAngle1 = AngleH5 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
 
 
-		if(-1<speedF1 && speedF1<1 && posF1>AngleH5){
+		if(-1<speedF1 && speedF1<1 && posF1>(AngleH5-tolerance)){
 			heelSwitchLeft=1;
 
 		}
@@ -1104,12 +1104,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK3;
 		Kd4=KdK3;
 
-		rAngle3 = (AngleH3-tolerance) / 180.0 * M_PI * 65 / 12;
+		rAngle3 = AngleH3 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK3  / 180.0 * M_PI * 65 / 12;
 
 
 
-		if(-1<speedF3 && speedF3<1 && posF3<AngleH3){
+		if(-1<speedF3 && speedF3<1 && posF3<(AngleH3+tolerance)){
 			heelSwitchRight=4;
 		}
 	}
@@ -1122,10 +1122,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK4;
 		Kd4=KdK4;
 
-		rAngle3 = (AngleH4+tolerance) / 180.0 * M_PI * 65 / 12;
+		rAngle3 = AngleH4 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF4 && speedF4<1 && posF4>AngleH4){
+		if(-1<speedF4 && speedF4<1 && posF4>(AngleH4-tolerance)){
 			heelSwitchRight=5;
 		}
 	}
@@ -1139,9 +1139,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		Kp4=KpK5;
 		Kd4=KdK5;
 
-		rAngle3 = (AngleH5+tolerance) / 180.0 * M_PI * 65 / 12;
+		rAngle3 = AngleH5 / 180.0 * M_PI * 65 / 12;
 		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
-		if(-1<speedF3 && speedF3<1 && posF3>AngleH5){
+		if(-1<speedF3 && speedF3<1 && posF3>(AngleH5-tolerance)){
 			heelSwitchRight=1;
 		}
 	}
