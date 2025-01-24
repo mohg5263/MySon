@@ -4369,7 +4369,7 @@ LOAD C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
 .rel.dyn        0x0800a320        0x0
  .rel.iplt      0x0800a320        0x0 C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+fp/hard/crtbegin.o
 
-.data           0x20000000      0x2e4 load address 0x0800a320
+.data           0x20000000      0x2ec load address 0x0800a320
                 0x20000000                        . = ALIGN (0x4)
                 0x20000000                        _sdata = .
  *(.data)
@@ -4404,216 +4404,216 @@ LOAD C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
  *fill*         0x20000024        0x4 
  .data.AngleH1  0x20000028        0x8 ./Core/Src/main.o
                 0x20000028                AngleH1
- .data.AngleH2  0x20000030        0x8 ./Core/Src/main.o
-                0x20000030                AngleH2
- .data.AngleH3  0x20000038        0x8 ./Core/Src/main.o
-                0x20000038                AngleH3
- .data.AngleK3  0x20000040        0x8 ./Core/Src/main.o
-                0x20000040                AngleK3
- .data.AngleH4  0x20000048        0x8 ./Core/Src/main.o
-                0x20000048                AngleH4
- .data.AngleK4  0x20000050        0x8 ./Core/Src/main.o
-                0x20000050                AngleK4
- .data.AngleH5  0x20000058        0x8 ./Core/Src/main.o
-                0x20000058                AngleH5
- .data.AngleK5  0x20000060        0x8 ./Core/Src/main.o
-                0x20000060                AngleK5
+ .data.AngleK1  0x20000030        0x8 ./Core/Src/main.o
+                0x20000030                AngleK1
+ .data.AngleH2  0x20000038        0x8 ./Core/Src/main.o
+                0x20000038                AngleH2
+ .data.AngleH3  0x20000040        0x8 ./Core/Src/main.o
+                0x20000040                AngleH3
+ .data.AngleK3  0x20000048        0x8 ./Core/Src/main.o
+                0x20000048                AngleK3
+ .data.AngleH4  0x20000050        0x8 ./Core/Src/main.o
+                0x20000050                AngleH4
+ .data.AngleK4  0x20000058        0x8 ./Core/Src/main.o
+                0x20000058                AngleK4
+ .data.AngleH5  0x20000060        0x8 ./Core/Src/main.o
+                0x20000060                AngleH5
+ .data.AngleK5  0x20000068        0x8 ./Core/Src/main.o
+                0x20000068                AngleK5
  .data.tolerance
-                0x20000068        0x8 ./Core/Src/main.o
-                0x20000068                tolerance
- .data.KpH1     0x20000070        0x8 ./Core/Src/main.o
-                0x20000070                KpH1
- .data.KdH1     0x20000078        0x8 ./Core/Src/main.o
-                0x20000078                KdH1
- .data.KpK1     0x20000080        0x8 ./Core/Src/main.o
-                0x20000080                KpK1
- .data.KdK1     0x20000088        0x8 ./Core/Src/main.o
-                0x20000088                KdK1
- .data.KpH2     0x20000090        0x8 ./Core/Src/main.o
-                0x20000090                KpH2
- .data.KdH2     0x20000098        0x8 ./Core/Src/main.o
-                0x20000098                KdH2
- .data.KpK2     0x200000a0        0x8 ./Core/Src/main.o
-                0x200000a0                KpK2
- .data.KdK2     0x200000a8        0x8 ./Core/Src/main.o
-                0x200000a8                KdK2
- .data.KpH3     0x200000b0        0x8 ./Core/Src/main.o
-                0x200000b0                KpH3
- .data.KdH3     0x200000b8        0x8 ./Core/Src/main.o
-                0x200000b8                KdH3
- .data.KpK3     0x200000c0        0x8 ./Core/Src/main.o
-                0x200000c0                KpK3
- .data.KdK3     0x200000c8        0x8 ./Core/Src/main.o
-                0x200000c8                KdK3
- .data.KpH4     0x200000d0        0x8 ./Core/Src/main.o
-                0x200000d0                KpH4
- .data.KdH4     0x200000d8        0x8 ./Core/Src/main.o
-                0x200000d8                KdH4
- .data.KpK4     0x200000e0        0x8 ./Core/Src/main.o
-                0x200000e0                KpK4
- .data.KdK4     0x200000e8        0x8 ./Core/Src/main.o
-                0x200000e8                KdK4
- .data.KpH5     0x200000f0        0x8 ./Core/Src/main.o
-                0x200000f0                KpH5
- .data.KdH5     0x200000f8        0x8 ./Core/Src/main.o
-                0x200000f8                KdH5
- .data.KpK5     0x20000100        0x8 ./Core/Src/main.o
-                0x20000100                KpK5
- .data.KdK5     0x20000108        0x8 ./Core/Src/main.o
-                0x20000108                KdK5
+                0x20000070        0x8 ./Core/Src/main.o
+                0x20000070                tolerance
+ .data.KpH1     0x20000078        0x8 ./Core/Src/main.o
+                0x20000078                KpH1
+ .data.KdH1     0x20000080        0x8 ./Core/Src/main.o
+                0x20000080                KdH1
+ .data.KpK1     0x20000088        0x8 ./Core/Src/main.o
+                0x20000088                KpK1
+ .data.KdK1     0x20000090        0x8 ./Core/Src/main.o
+                0x20000090                KdK1
+ .data.KpH2     0x20000098        0x8 ./Core/Src/main.o
+                0x20000098                KpH2
+ .data.KdH2     0x200000a0        0x8 ./Core/Src/main.o
+                0x200000a0                KdH2
+ .data.KpK2     0x200000a8        0x8 ./Core/Src/main.o
+                0x200000a8                KpK2
+ .data.KdK2     0x200000b0        0x8 ./Core/Src/main.o
+                0x200000b0                KdK2
+ .data.KpH3     0x200000b8        0x8 ./Core/Src/main.o
+                0x200000b8                KpH3
+ .data.KdH3     0x200000c0        0x8 ./Core/Src/main.o
+                0x200000c0                KdH3
+ .data.KpK3     0x200000c8        0x8 ./Core/Src/main.o
+                0x200000c8                KpK3
+ .data.KdK3     0x200000d0        0x8 ./Core/Src/main.o
+                0x200000d0                KdK3
+ .data.KpH4     0x200000d8        0x8 ./Core/Src/main.o
+                0x200000d8                KpH4
+ .data.KdH4     0x200000e0        0x8 ./Core/Src/main.o
+                0x200000e0                KdH4
+ .data.KpK4     0x200000e8        0x8 ./Core/Src/main.o
+                0x200000e8                KpK4
+ .data.KdK4     0x200000f0        0x8 ./Core/Src/main.o
+                0x200000f0                KdK4
+ .data.KpH5     0x200000f8        0x8 ./Core/Src/main.o
+                0x200000f8                KpH5
+ .data.KdH5     0x20000100        0x8 ./Core/Src/main.o
+                0x20000100                KdH5
+ .data.KpK5     0x20000108        0x8 ./Core/Src/main.o
+                0x20000108                KpK5
+ .data.KdK5     0x20000110        0x8 ./Core/Src/main.o
+                0x20000110                KdK5
  .data.SystemCoreClock
-                0x20000110        0x4 ./Core/Src/system_stm32l4xx.o
-                0x20000110                SystemCoreClock
+                0x20000118        0x4 ./Core/Src/system_stm32l4xx.o
+                0x20000118                SystemCoreClock
  .data.uwTickPrio
-                0x20000114        0x4 ./Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.o
-                0x20000114                uwTickPrio
+                0x2000011c        0x4 ./Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.o
+                0x2000011c                uwTickPrio
  .data.uwTickFreq
-                0x20000118        0x1 ./Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.o
-                0x20000118                uwTickFreq
- *fill*         0x20000119        0x3 
- .data.__sglue  0x2000011c        0xc C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-findfp.o)
-                0x2000011c                __sglue
+                0x20000120        0x1 ./Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.o
+                0x20000120                uwTickFreq
+ *fill*         0x20000121        0x3 
+ .data.__sglue  0x20000124        0xc C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-findfp.o)
+                0x20000124                __sglue
  .data._impure_ptr
-                0x20000128        0x4 C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-impure.o)
-                0x20000128                _impure_ptr
+                0x20000130        0x4 C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-impure.o)
+                0x20000130                _impure_ptr
  .data._impure_data
-                0x2000012c       0x4c C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-impure.o)
-                0x2000012c                _impure_data
+                0x20000134       0x4c C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-impure.o)
+                0x20000134                _impure_data
  .data.__global_locale
-                0x20000178      0x16c C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-locale.o)
-                0x20000178                __global_locale
+                0x20000180      0x16c C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/../../../../arm-none-eabi/lib/thumb/v7e-m+fp/hard\libc_nano.a(libc_a-locale.o)
+                0x20000180                __global_locale
  *(.RamFunc)
  *(.RamFunc*)
-                0x200002e4                        . = ALIGN (0x4)
-                0x200002e4                        _edata = .
+                0x200002ec                        . = ALIGN (0x4)
+                0x200002ec                        _edata = .
 
-.igot.plt       0x200002e4        0x0 load address 0x0800a604
- .igot.plt      0x200002e4        0x0 C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+fp/hard/crtbegin.o
-                0x200002e4                        . = ALIGN (0x4)
+.igot.plt       0x200002ec        0x0 load address 0x0800a60c
+ .igot.plt      0x200002ec        0x0 C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+                0x200002ec                        . = ALIGN (0x4)
 
-.bss            0x200002e8      0x398 load address 0x0800a604
-                0x200002e8                        _sbss = .
-                0x200002e8                        __bss_start__ = _sbss
+.bss            0x200002f0      0x390 load address 0x0800a60c
+                0x200002f0                        _sbss = .
+                0x200002f0                        __bss_start__ = _sbss
  *(.bss)
- .bss           0x200002e8       0x1c C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+fp/hard/crtbegin.o
+ .bss           0x200002f0       0x1c C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.externaltools.gnu-tools-for-stm32.12.3.rel1.win32_1.0.100.202403111256/tools/bin/../lib/gcc/arm-none-eabi/12.3.1/thumb/v7e-m+fp/hard/crtbegin.o
  *(.bss*)
- .bss.hcan1     0x20000304       0x28 ./Core/Src/main.o
-                0x20000304                hcan1
- .bss.htim6     0x2000032c       0x4c ./Core/Src/main.o
-                0x2000032c                htim6
- .bss.huart2    0x20000378       0x88 ./Core/Src/main.o
-                0x20000378                huart2
- .bss.TxHeader  0x20000400       0x18 ./Core/Src/main.o
-                0x20000400                TxHeader
- .bss.RxHeader  0x20000418       0x1c ./Core/Src/main.o
-                0x20000418                RxHeader
- .bss.TxData    0x20000434        0x8 ./Core/Src/main.o
-                0x20000434                TxData
- .bss.RxData    0x2000043c        0x8 ./Core/Src/main.o
-                0x2000043c                RxData
+ .bss.hcan1     0x2000030c       0x28 ./Core/Src/main.o
+                0x2000030c                hcan1
+ .bss.htim6     0x20000334       0x4c ./Core/Src/main.o
+                0x20000334                htim6
+ .bss.huart2    0x20000380       0x88 ./Core/Src/main.o
+                0x20000380                huart2
+ .bss.TxHeader  0x20000408       0x18 ./Core/Src/main.o
+                0x20000408                TxHeader
+ .bss.RxHeader  0x20000420       0x1c ./Core/Src/main.o
+                0x20000420                RxHeader
+ .bss.TxData    0x2000043c        0x8 ./Core/Src/main.o
+                0x2000043c                TxData
+ .bss.RxData    0x20000444        0x8 ./Core/Src/main.o
+                0x20000444                RxData
  .bss.TxMailbox
-                0x20000444        0x4 ./Core/Src/main.o
-                0x20000444                TxMailbox
- .bss.heelSwitchRight
-                0x20000448        0x4 ./Core/Src/main.o
-                0x20000448                heelSwitchRight
- .bss.previous_heelSwitchRight
                 0x2000044c        0x4 ./Core/Src/main.o
-                0x2000044c                previous_heelSwitchRight
- .bss.previous_heelSwitchLeft
+                0x2000044c                TxMailbox
+ .bss.heelSwitchRight
                 0x20000450        0x4 ./Core/Src/main.o
-                0x20000450                previous_heelSwitchLeft
- .bss.position_1
+                0x20000450                heelSwitchRight
+ .bss.previous_heelSwitchRight
                 0x20000454        0x4 ./Core/Src/main.o
-                0x20000454                position_1
- .bss.velocity_1
+                0x20000454                previous_heelSwitchRight
+ .bss.previous_heelSwitchLeft
                 0x20000458        0x4 ./Core/Src/main.o
-                0x20000458                velocity_1
- .bss.torque_1  0x2000045c        0x4 ./Core/Src/main.o
-                0x2000045c                torque_1
- .bss.temp_1    0x20000460        0x4 ./Core/Src/main.o
-                0x20000460                temp_1
+                0x20000458                previous_heelSwitchLeft
+ .bss.position_1
+                0x2000045c        0x4 ./Core/Src/main.o
+                0x2000045c                position_1
+ .bss.velocity_1
+                0x20000460        0x4 ./Core/Src/main.o
+                0x20000460                velocity_1
+ .bss.torque_1  0x20000464        0x4 ./Core/Src/main.o
+                0x20000464                torque_1
+ .bss.temp_1    0x20000468        0x4 ./Core/Src/main.o
+                0x20000468                temp_1
  .bss.position_2
-                0x20000464        0x4 ./Core/Src/main.o
-                0x20000464                position_2
+                0x2000046c        0x4 ./Core/Src/main.o
+                0x2000046c                position_2
  .bss.velocity_2
-                0x20000468        0x4 ./Core/Src/main.o
-                0x20000468                velocity_2
- .bss.torque_2  0x2000046c        0x4 ./Core/Src/main.o
-                0x2000046c                torque_2
- .bss.temp_2    0x20000470        0x4 ./Core/Src/main.o
-                0x20000470                temp_2
+                0x20000470        0x4 ./Core/Src/main.o
+                0x20000470                velocity_2
+ .bss.torque_2  0x20000474        0x4 ./Core/Src/main.o
+                0x20000474                torque_2
+ .bss.temp_2    0x20000478        0x4 ./Core/Src/main.o
+                0x20000478                temp_2
  .bss.position_3
-                0x20000474        0x4 ./Core/Src/main.o
-                0x20000474                position_3
+                0x2000047c        0x4 ./Core/Src/main.o
+                0x2000047c                position_3
  .bss.velocity_3
-                0x20000478        0x4 ./Core/Src/main.o
-                0x20000478                velocity_3
- .bss.torque_3  0x2000047c        0x4 ./Core/Src/main.o
-                0x2000047c                torque_3
- .bss.temp_3    0x20000480        0x4 ./Core/Src/main.o
-                0x20000480                temp_3
+                0x20000480        0x4 ./Core/Src/main.o
+                0x20000480                velocity_3
+ .bss.torque_3  0x20000484        0x4 ./Core/Src/main.o
+                0x20000484                torque_3
+ .bss.temp_3    0x20000488        0x4 ./Core/Src/main.o
+                0x20000488                temp_3
  .bss.position_4
-                0x20000484        0x4 ./Core/Src/main.o
-                0x20000484                position_4
+                0x2000048c        0x4 ./Core/Src/main.o
+                0x2000048c                position_4
  .bss.velocity_4
-                0x20000488        0x4 ./Core/Src/main.o
-                0x20000488                velocity_4
- .bss.torque_4  0x2000048c        0x4 ./Core/Src/main.o
-                0x2000048c                torque_4
- .bss.temp_4    0x20000490        0x4 ./Core/Src/main.o
-                0x20000490                temp_4
- .bss.posF1     0x20000494        0x4 ./Core/Src/main.o
-                0x20000494                posF1
- .bss.posF2     0x20000498        0x4 ./Core/Src/main.o
-                0x20000498                posF2
- .bss.posF3     0x2000049c        0x4 ./Core/Src/main.o
-                0x2000049c                posF3
- .bss.posF4     0x200004a0        0x4 ./Core/Src/main.o
-                0x200004a0                posF4
- .bss.rAngle1   0x200004a4        0x4 ./Core/Src/main.o
-                0x200004a4                rAngle1
- .bss.rAngle2   0x200004a8        0x4 ./Core/Src/main.o
-                0x200004a8                rAngle2
- .bss.rAngle3   0x200004ac        0x4 ./Core/Src/main.o
-                0x200004ac                rAngle3
- .bss.rAngle4   0x200004b0        0x4 ./Core/Src/main.o
-                0x200004b0                rAngle4
- *fill*         0x200004b4        0x4 
- .bss.Kp1       0x200004b8        0x8 ./Core/Src/main.o
-                0x200004b8                Kp1
- .bss.Kd1       0x200004c0        0x8 ./Core/Src/main.o
-                0x200004c0                Kd1
- .bss.Kp2       0x200004c8        0x8 ./Core/Src/main.o
-                0x200004c8                Kp2
- .bss.Kd2       0x200004d0        0x8 ./Core/Src/main.o
-                0x200004d0                Kd2
- .bss.Kp3       0x200004d8        0x8 ./Core/Src/main.o
-                0x200004d8                Kp3
- .bss.Kd3       0x200004e0        0x8 ./Core/Src/main.o
-                0x200004e0                Kd3
- .bss.Kp4       0x200004e8        0x8 ./Core/Src/main.o
-                0x200004e8                Kp4
- .bss.Kd4       0x200004f0        0x8 ./Core/Src/main.o
-                0x200004f0                Kd4
- .bss.torqueF1  0x200004f8        0x4 ./Core/Src/main.o
-                0x200004f8                torqueF1
- .bss.speedF1   0x200004fc        0x4 ./Core/Src/main.o
-                0x200004fc                speedF1
- .bss.torqueF2  0x20000500        0x4 ./Core/Src/main.o
-                0x20000500                torqueF2
- .bss.speedF2   0x20000504        0x4 ./Core/Src/main.o
-                0x20000504                speedF2
- .bss.torqueF3  0x20000508        0x4 ./Core/Src/main.o
-                0x20000508                torqueF3
- .bss.speedF3   0x2000050c        0x4 ./Core/Src/main.o
-                0x2000050c                speedF3
- .bss.torqueF4  0x20000510        0x4 ./Core/Src/main.o
-                0x20000510                torqueF4
- .bss.speedF4   0x20000514        0x4 ./Core/Src/main.o
-                0x20000514                speedF4
- .bss.AngleK1   0x20000518        0x8 ./Core/Src/main.o
-                0x20000518                AngleK1
+                0x20000490        0x4 ./Core/Src/main.o
+                0x20000490                velocity_4
+ .bss.torque_4  0x20000494        0x4 ./Core/Src/main.o
+                0x20000494                torque_4
+ .bss.temp_4    0x20000498        0x4 ./Core/Src/main.o
+                0x20000498                temp_4
+ .bss.posF1     0x2000049c        0x4 ./Core/Src/main.o
+                0x2000049c                posF1
+ .bss.posF2     0x200004a0        0x4 ./Core/Src/main.o
+                0x200004a0                posF2
+ .bss.posF3     0x200004a4        0x4 ./Core/Src/main.o
+                0x200004a4                posF3
+ .bss.posF4     0x200004a8        0x4 ./Core/Src/main.o
+                0x200004a8                posF4
+ .bss.rAngle1   0x200004ac        0x4 ./Core/Src/main.o
+                0x200004ac                rAngle1
+ .bss.rAngle2   0x200004b0        0x4 ./Core/Src/main.o
+                0x200004b0                rAngle2
+ .bss.rAngle3   0x200004b4        0x4 ./Core/Src/main.o
+                0x200004b4                rAngle3
+ .bss.rAngle4   0x200004b8        0x4 ./Core/Src/main.o
+                0x200004b8                rAngle4
+ *fill*         0x200004bc        0x4 
+ .bss.Kp1       0x200004c0        0x8 ./Core/Src/main.o
+                0x200004c0                Kp1
+ .bss.Kd1       0x200004c8        0x8 ./Core/Src/main.o
+                0x200004c8                Kd1
+ .bss.Kp2       0x200004d0        0x8 ./Core/Src/main.o
+                0x200004d0                Kp2
+ .bss.Kd2       0x200004d8        0x8 ./Core/Src/main.o
+                0x200004d8                Kd2
+ .bss.Kp3       0x200004e0        0x8 ./Core/Src/main.o
+                0x200004e0                Kp3
+ .bss.Kd3       0x200004e8        0x8 ./Core/Src/main.o
+                0x200004e8                Kd3
+ .bss.Kp4       0x200004f0        0x8 ./Core/Src/main.o
+                0x200004f0                Kp4
+ .bss.Kd4       0x200004f8        0x8 ./Core/Src/main.o
+                0x200004f8                Kd4
+ .bss.torqueF1  0x20000500        0x4 ./Core/Src/main.o
+                0x20000500                torqueF1
+ .bss.speedF1   0x20000504        0x4 ./Core/Src/main.o
+                0x20000504                speedF1
+ .bss.torqueF2  0x20000508        0x4 ./Core/Src/main.o
+                0x20000508                torqueF2
+ .bss.speedF2   0x2000050c        0x4 ./Core/Src/main.o
+                0x2000050c                speedF2
+ .bss.torqueF3  0x20000510        0x4 ./Core/Src/main.o
+                0x20000510                torqueF3
+ .bss.speedF3   0x20000514        0x4 ./Core/Src/main.o
+                0x20000514                speedF3
+ .bss.torqueF4  0x20000518        0x4 ./Core/Src/main.o
+                0x20000518                torqueF4
+ .bss.speedF4   0x2000051c        0x4 ./Core/Src/main.o
+                0x2000051c                speedF4
  .bss.AngleK2   0x20000520        0x8 ./Core/Src/main.o
                 0x20000520                AngleK2
  .bss.lastButtonStateRight.1
@@ -4651,7 +4651,7 @@ LOAD C:/ST/STM32CubeIDE_1.15.1/STM32CubeIDE/plugins/com.st.stm32cube.ide.mcu.ext
                 0x20000680                        __bss_end__ = _ebss
 
 ._user_heap_stack
-                0x20000680      0x600 load address 0x0800a604
+                0x20000680      0x600 load address 0x0800a60c
                 0x20000680                        . = ALIGN (0x8)
                 [!provide]                        PROVIDE (end = .)
                 0x20000680                        PROVIDE (_end = .)

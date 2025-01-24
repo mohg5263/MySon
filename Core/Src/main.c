@@ -859,7 +859,7 @@ double hipFactorKd1=1;
 
 
 double AngleH1 = 20;
-double AngleK1 = 0;
+double AngleK1 = -5;
 double AngleH2 = -5;
 double AngleK2 = 0;
 double AngleH3 = -23;
@@ -872,9 +872,9 @@ double AngleK5 = 40;
 double tolerance=5;
 
 //1      Waiting Heel Strike
-double KpH1=1;
-double KdH1=0.7;
-double KpK1=1;
+double KpH1=2;
+double KdH1=0.3;
+double KpK1=2;
 double KdK1=0.3;
 //2     Foot flat
 double KpH2=1;
