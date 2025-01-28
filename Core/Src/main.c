@@ -871,31 +871,27 @@ double AngleK5 = 40;
 
 double tolerance=5;
 
-//1      Waiting Heel Strike
+//1      Swing Extension
 double KpH1=2;
 double KdH1=0.3;
 double KpK1=2;
 double KdK1=0.3;
-//2     Foot flat
+//2     Stance Flexion/Extension
 double KpH2=1;
 double KdH2=0.7;
 double KpK2=1;
 double KdK2=0.7;
-//3     Hip extension
+//3     Pre-Swing
 double KpH3=3;
 double KdH3=0.5;
 double KpK3=1;
 double KdK3=0.2;
-//4     Knee Flexion Contact Avoider
+//4     Swing Flexion
 double KpH4=2;
 double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
-//5     Hip Flexion
-double KpH5=3;
-double KdH5=0.2;
-double KpK5=0.5;
-double KdK5=0.2;
+
 
 
 
@@ -963,6 +959,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 	//	***********************************   Left Leg   ***********************************
+	// Swing Extension
 	if (heelSwitchLeft==1) {
 
 		Kp1=KpH1;
@@ -975,6 +972,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle2 = AngleK1  / 180.0 * M_PI * 65 / 12;
 	}
 
+	// Stance
 	else if (heelSwitchLeft==2) {
 
 		Kp1=KpH2;
@@ -992,6 +990,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		}
 	}
 
+	// Preswing
 	else if (heelSwitchLeft==3) {
 
 		Kp1=KpH3;
@@ -1009,6 +1008,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	}
 
+	// Swing Flexion
 	else if (heelSwitchLeft==4) {
 
 		Kp1=KpH4;
@@ -1022,24 +1022,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 		if(-1<speedF2 && speedF2<1 && posF2>(AngleK4-tolerance)){
-			heelSwitchLeft=1;
-
-		}
-	}
-
-	else if (heelSwitchLeft==5) {
-
-		Kp1=KpH5;
-		Kd1=KdH5;
-
-		Kp2=KpK5;
-		Kd2=KdK5;
-
-		rAngle1 = AngleH5 / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
-
-
-		if(-1<speedF1 && speedF1<1 && posF1>(AngleH5-tolerance)){
 			heelSwitchLeft=1;
 
 		}
@@ -1062,7 +1044,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = 0  / 180.0 * M_PI * 65 / 12;
 	}
 
-
+	// Swing Extension
 	else if (heelSwitchRight==1) {
 
 		Kp3=KpH1;
@@ -1075,6 +1057,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = AngleK1  / 180.0 * M_PI * 65 / 12;
 	}
 
+	// Stance
 	else if (heelSwitchRight==2) {
 
 		Kp3=KpH2;
@@ -1095,7 +1078,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-
+	// Preswing
 	else if (heelSwitchRight==3) {
 
 		Kp3=KpH3;
@@ -1114,6 +1097,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		}
 	}
 
+	// Swing Flexion
 	else if (heelSwitchRight==4) {
 
 		Kp3=KpH4;
@@ -1129,23 +1113,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			heelSwitchRight=1;
 		}
 	}
-
-
-	else if (heelSwitchRight==5) {
-
-		Kp3=KpH5;
-		Kd3=KdH5;
-
-		Kp4=KpK5;
-		Kd4=KdK5;
-
-		rAngle3 = AngleH5 / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
-		if(-1<speedF3 && speedF3<1 && posF3>(AngleH5-tolerance)){
-			heelSwitchRight=1;
-		}
-	}
-
 
 
 
