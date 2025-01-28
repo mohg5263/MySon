@@ -862,12 +862,11 @@ double AngleH1 = 20;
 double AngleK1 = -5;
 double AngleH2 = -5;
 double AngleK2 = 0;
-double AngleH3 = -23;
+double AngleH3 = -15;
 double AngleK3 = 10;
-double AngleH4 = 40;
+double AngleH4 = 30;
 double AngleK4 = 50;
-double AngleH5 = 40;
-double AngleK5 = 40;
+
 
 double tolerance=5;
 
