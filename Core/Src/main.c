@@ -858,8 +858,8 @@ double hipFactorKp1=1;
 double hipFactorKd1=1;
 
 
-double AngleH1 = 20;
-double AngleK1 = -5;
+double AngleH1 = 15;
+double AngleK1 = 5;
 double AngleH2 = -5;
 double AngleK2 = 0;
 double AngleH3 = -15;
@@ -883,7 +883,7 @@ double KdK2=0.3;
 //3     Pre-Swing
 double KpH3=3;
 double KdH3=0.5;
-double KpK3=1;
+double KpK3=3;
 double KdK3=0.2;
 //4     Swing Flexion
 double KpH4=2;
@@ -891,7 +891,7 @@ double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
 
-int skipForDelay=200;
+int skipForDelay=80;
 int skippedRight=0;
 int skippedLeft=0;
 
