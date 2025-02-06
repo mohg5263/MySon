@@ -59,6 +59,10 @@ void Right_mpu6050_init_IT(void)
     temp_data = 0;
     ret = HAL_I2C_Mem_Write(&hi2c1, (DEVICE_ADDRESS << 1), REG_USR_CTRL, I2C_MEMADD_SIZE_8BIT, &temp_data, 1, 100);
     // Check ret…
+
+    temp_data = 0;
+    HAL_I2C_Mem_Write(&hi2c1, (DEVICE_ADDRESS << 1), 0x6A, I2C_MEMADD_SIZE_8BIT, &temp_data, 1, 100);  // Disable FIFO
+
 }
 
 void Left_mpu6050_init_IT(void)
@@ -88,6 +92,10 @@ void Left_mpu6050_init_IT(void)
     temp_data = 0;
     ret = HAL_I2C_Mem_Write(&hi2c2, (DEVICE_ADDRESS << 1), REG_USR_CTRL, I2C_MEMADD_SIZE_8BIT, &temp_data, 1, 100);
     // Check ret…
+
+    temp_data = 0;
+    HAL_I2C_Mem_Write(&hi2c2, (DEVICE_ADDRESS << 1), 0x6A, I2C_MEMADD_SIZE_8BIT, &temp_data, 1, 100);  // Disable FIFO
+
 }
 
 void Right_mpu6050_read_IT(void)
@@ -160,6 +168,25 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
     	char msg[50];
     	sprintf(msg, "Left: X = %.2f, Y = %.2f, Z = %.2f \r\n", x_ms2_L, y_ms2_L, z_ms2_L);
     	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+    }
+}
+
+
+
+
+
+void HAL_I2C_ErrorCallback(I2C_HandleTypeDef *hi2c)
+{
+    if (hi2c->ErrorCode != HAL_I2C_ERROR_NONE)
+    {
+        char msg[50];
+        sprintf(msg, "I2C Error (0x%02X)\r\n", hi2c->ErrorCode);
+        HAL_UART_Transmit(&huart2, (uint8_t*)msg, strlen(msg), HAL_MAX_DELAY);
+
+        // Reset the I2C interface in case of error
+        HAL_I2C_DeInit(hi2c);
+        HAL_Delay(10);
+        HAL_I2C_Init(hi2c);
     }
 }
 

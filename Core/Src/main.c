@@ -1025,15 +1025,15 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-    // Only trigger a new read if the I2C bus is ready
-    if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY)
-    {
-        Right_mpu6050_read_IT();
-    }
-    if (HAL_I2C_GetState(&hi2c2) == HAL_I2C_STATE_READY)
-    {
-        Left_mpu6050_read_IT();
-    }
+
+	if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY && rightDataReady == 0) {
+		Right_mpu6050_read_IT();
+	}
+	if (HAL_I2C_GetState(&hi2c2) == HAL_I2C_STATE_READY && leftDataReady == 0) {
+		Left_mpu6050_read_IT();
+	}
+
+
 
 
 

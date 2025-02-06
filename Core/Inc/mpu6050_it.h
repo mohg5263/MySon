@@ -8,6 +8,12 @@
 #ifndef INC_MPU6050_IT_H_
 #define INC_MPU6050_IT_H_
 
+#include <stdint.h>  // Include this for uint8_t type
+
+// Declare flags as extern so main.c can access them
+extern volatile uint8_t rightDataReady;
+extern volatile uint8_t leftDataReady;
+
 #define DEVICE_ADDRESS 0x68
 #define FS_GYRO_250 0
 #define FS_GYRO_500 8
