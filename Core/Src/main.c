@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
-#include "mpu6050_it.h"
+#include "mpu6050.h"
 
 
 /* USER CODE END Includes */
@@ -349,12 +349,12 @@ int main(void)
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
-	Right_mpu6050_init_IT();
-	Left_mpu6050_init_IT();
+	Right_mpu6050_init();
+	Left_mpu6050_init();
 
 
 	// Start timer
-	HAL_TIM_Base_Start_IT(&htim6);
+	HAL_TIM_Base_Start(&htim6);
 
 
 
@@ -366,7 +366,12 @@ int main(void)
   /* USER CODE BEGIN WHILE */
 	while (1) {
     /* USER CODE END WHILE */
+		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 
+		Right_mpu6050_read();
+		Left_mpu6050_read();
+
+		HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
     /* USER CODE BEGIN 3 */
 	}
   /* USER CODE END 3 */
@@ -490,7 +495,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x00702991;
+  hi2c1.Init.Timing = 0x10909CEC;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -538,7 +543,7 @@ static void MX_I2C2_Init(void)
 
   /* USER CODE END I2C2_Init 1 */
   hi2c2.Instance = I2C2;
-  hi2c2.Init.Timing = 0x00702991;
+  hi2c2.Init.Timing = 0x10909CEC;
   hi2c2.Init.OwnAddress1 = 0;
   hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -590,7 +595,7 @@ static void MX_TIM6_Init(void)
   htim6.Instance = TIM6;
   htim6.Init.Prescaler = 4-1;
   htim6.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim6.Init.Period = 60000-1;
+  htim6.Init.Period = 50000-1;
   htim6.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim6) != HAL_OK)
   {
@@ -624,7 +629,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 921600;
+  huart2.Init.BaudRate = 115200;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -1021,30 +1026,11 @@ int skippedLeft=0;
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
-
-
-
-
-	if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY && rightDataReady == 0) {
-		Right_mpu6050_read_IT();
-	}
-	if (HAL_I2C_GetState(&hi2c2) == HAL_I2C_STATE_READY && leftDataReady == 0) {
-		Left_mpu6050_read_IT();
-	}
-
-
-
-
-
-
 
 //	char msg[50];
 //	sprintf(msg, "%d,%d\r\n",
 //	        heelSwitchLeft, heelSwitchRight);
 //	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-
-
 
 
 
@@ -1266,14 +1252,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
+//	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
 
 	previous_heelSwitchRight = heelSwitchRight;
 	previous_heelSwitchLeft = heelSwitchLeft;
 
 
 
-	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
+
 
 
 
