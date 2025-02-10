@@ -60,8 +60,8 @@ all: main-build
 main-build: Project13.elf secondary-outputs
 
 # Tool invocations
-Project13.elf Project13.map: $(OBJS) $(USER_OBJS) C:\Users\mghan\OneDrive\ -\ The\ University\ of\ Alabama\Attachments\STM\ Code\Udemy\My-workspace\Cubemars_Motor_Control\ -\ 4motor\Project13\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Project13.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\mghan\OneDrive - The University of Alabama\Attachments\STM Code\Udemy\My-workspace\Cubemars_Motor_Control - 4motor\Project13\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Project13.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Project13.elf Project13.map: $(OBJS) $(USER_OBJS) C:\Users\mghan\OneDrive\ -\ The\ University\ of\ Alabama\Attachments\1_Research\Paper1\STM\ Code\Project13\STM32L476RGTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Project13.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\mghan\OneDrive - The University of Alabama\Attachments\1_Research\Paper1\STM Code\Project13\STM32L476RGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Project13.map" -Wl,--gc-sections -static -u _printf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
