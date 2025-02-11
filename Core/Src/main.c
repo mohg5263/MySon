@@ -28,7 +28,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
-#include "MPU6050.h"
+
 
 /* USER CODE END Includes */
 
@@ -48,8 +48,6 @@
 
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
-
-I2C_HandleTypeDef hi2c1;
 
 TIM_HandleTypeDef htim6;
 
@@ -76,7 +74,6 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_TIM6_Init(void);
-static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 void CAN1_Tx_motor_on(int);
 void CAN1_Tx_motor_zero(int);
@@ -289,7 +286,6 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN1_Init();
   MX_TIM6_Init();
-  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
 	if (HAL_CAN_Start(&hcan1) != HAL_OK) //CAN is started and checked for error.
 			{
@@ -335,9 +331,6 @@ int main(void)
 	// Start timer
 	HAL_TIM_Base_Start_IT(&htim6);
 
-	//Start IMU Right
-	MPU6050_Initialization();
-
 //	cycle = 0;
 
   /* USER CODE END 2 */
@@ -348,17 +341,6 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-		if(MPU6050_DataReady() == 1)
-		{
-			MPU6050_ProcessData(&MPU6050);
-//			//printf("%f, %f, %f\n", MPU6050.acc_x, MPU6050.acc_y, MPU6050.acc_z);
-//			//printf("%f, %f, %f\n", MPU6050.gyro_x, MPU6050.gyro_y, MPU6050.gyro_z);
-//			printf("%d, %d, %d\n", MPU6050.acc_x_raw, MPU6050.acc_y_raw, MPU6050.acc_z_raw);
-
-			char msg[50];
-			sprintf(msg, "%d, %d, %d\r\n", MPU6050.acc_x_raw, MPU6050.acc_y_raw, MPU6050.acc_z_raw);
-			HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
-		}
 	}
   /* USER CODE END 3 */
 }
@@ -466,54 +448,6 @@ static void MX_CAN1_Init(void)
 }
 
 /**
-  * @brief I2C1 Initialization Function
-  * @param None
-  * @retval None
-  */
-static void MX_I2C1_Init(void)
-{
-
-  /* USER CODE BEGIN I2C1_Init 0 */
-
-  /* USER CODE END I2C1_Init 0 */
-
-  /* USER CODE BEGIN I2C1_Init 1 */
-
-  /* USER CODE END I2C1_Init 1 */
-  hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x00702991;
-  hi2c1.Init.OwnAddress1 = 0;
-  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
-  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
-  hi2c1.Init.OwnAddress2 = 0;
-  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
-  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
-  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
-  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure Analogue filter
-  */
-  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
-  {
-    Error_Handler();
-  }
-
-  /** Configure Digital filter
-  */
-  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
-  {
-    Error_Handler();
-  }
-  /* USER CODE BEGIN I2C1_Init 2 */
-
-  /* USER CODE END I2C1_Init 2 */
-
-}
-
-/**
   * @brief TIM6 Initialization Function
   * @param None
   * @retval None
@@ -567,7 +501,7 @@ static void MX_USART2_UART_Init(void)
 
   /* USER CODE END USART2_Init 1 */
   huart2.Instance = USART2;
-  huart2.Init.BaudRate = 115200;
+  huart2.Init.BaudRate = 921600;
   huart2.Init.WordLength = UART_WORDLENGTH_8B;
   huart2.Init.StopBits = UART_STOPBITS_1;
   huart2.Init.Parity = UART_PARITY_NONE;
@@ -607,7 +541,7 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_6, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -622,24 +556,18 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD2_Pin PA6 */
-  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_6;
+  /*Configure GPIO pins : LD2_Pin PA6 PA7 */
+  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_6|GPIO_PIN_7;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC10 PC11 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11;
+  /*Configure GPIO pins : PC10 PC11 PC12 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : PB5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
@@ -931,9 +859,9 @@ double hipFactorKd1=1;
 
 
 double AngleH1 = 15;
-double AngleK1 = 5;
+double AngleK1 = -5;
 double AngleH2 = -5;
-double AngleK2 = 0;
+double AngleK2 = 10;
 double AngleH3 = -15;
 double AngleK3 = 10;
 double AngleH4 = 30;
@@ -950,7 +878,7 @@ double KdK1=0.3;
 //2     Stance Flexion/Extension
 double KpH2=2;
 double KdH2=0.3;
-double KpK2=2;
+double KpK2=0.8;
 double KdK2=0.3;
 //3     Pre-Swing
 double KpH3=3;
@@ -975,10 +903,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 //	cycle=cycle+1;
 
 
-//	char msg[50];
-//	sprintf(msg, "%d,%d\r\n",
-//	        heelSwitchLeft, heelSwitchRight);
-//	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+	char msg[50];
+	sprintf(msg, "%d,%d\r\n",
+	        heelSwitchLeft, heelSwitchRight);
+	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
 
@@ -1202,7 +1130,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
-//	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
+	signalMotors(rAngle1,rAngle2,rAngle3,rAngle4);
 
 	previous_heelSwitchRight = heelSwitchRight;
 	previous_heelSwitchLeft = heelSwitchLeft;
