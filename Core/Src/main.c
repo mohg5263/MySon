@@ -864,8 +864,10 @@ double AngleH2 = -5;
 double AngleK2 = 10;
 double AngleH3 = -15;
 double AngleK3 = 10;
-double AngleH4 = 30;
+double AngleH4 = 40;
 double AngleK4 = 50;
+double AngleH6 = 30;
+double AngleK6 = 50;
 
 
 double tolerance=5;
@@ -885,11 +887,18 @@ double KpH3=3;
 double KdH3=0.5;
 double KpK3=3;
 double KdK3=0.2;
+//3.5 Middle swing
+double KpH6=2;
+double KdH6=0.2;
+double KpK6=3;
+double KdK6=0.2;
 //4     Swing Flexion
 double KpH4=2;
 double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
+
+
 
 int skipForDelay=80;
 int skippedRight=0;
@@ -920,7 +929,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchRight==0 || (heelSwitchRight==1 && heelSwitchLeft==3)) {
+		if (heelSwitchRight==0 || (heelSwitchRight==1 && heelSwitchLeft>2)) {
 		heelSwitchRight=heelSwitchRight+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Right Triggered!" );
@@ -938,7 +947,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchLeft==0 || (heelSwitchLeft==1 && heelSwitchRight==3)) {
+		if (heelSwitchLeft==0 || (heelSwitchLeft==1 && heelSwitchRight>2)) {
 		heelSwitchLeft=heelSwitchLeft+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Left Triggered!" );
@@ -1001,6 +1010,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			heelSwitchLeft=5;
 		}
 	}
+
+	// Delay state
 	else if (heelSwitchLeft==5) {
 		if (skippedLeft<skipForDelay){
 			skippedLeft++;
@@ -1009,8 +1020,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			skippedLeft=0;
 		}
 	}
-
-
 
 	// Swing Flexion
 	else if (heelSwitchLeft==4) {
@@ -1024,11 +1033,32 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH4 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF2 && speedF2<1 && posF2>(AngleK4-tolerance)){
+		if(-1<speedF2 && speedF2<1 && posF1>(AngleH6-tolerance)){
+			heelSwitchLeft=6;
+
+		}
+	}
+
+
+	// Swing Flexion
+	else if (heelSwitchLeft==6) {
+
+		Kp1=KpH6;
+		Kd1=KdH6;
+
+		Kp2=KpK6;
+		Kd2=KdK6;
+
+		rAngle1 = AngleH6 / 180.0 * M_PI * 65 / 12;
+		rAngle2 = AngleK6  / 180.0 * M_PI * 65 / 12;
+
+		if(-1<speedF2 && speedF2<1 && posF1<(AngleH6+tolerance/3)){
 			heelSwitchLeft=1;
 
 		}
 	}
+
+
 
 
 
@@ -1100,6 +1130,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			heelSwitchRight=5;
 		}
 	}
+
+	// Delay State
 	else if (heelSwitchRight==5) {
 		if (skippedRight<skipForDelay){
 			skippedRight++;
@@ -1122,10 +1154,26 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
 		if(-1<speedF4 && speedF4<1 && posF4>(AngleH4-tolerance)){
-			heelSwitchRight=1;
+			heelSwitchRight=6;
 		}
 	}
 
+	// Swing Flexion
+	else if (heelSwitchRight==6) {
+
+		Kp3=KpH6;
+		Kd3=KdH6;
+
+		Kp4=KpK6;
+		Kd4=KdK6;
+
+		rAngle3 = AngleH6 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = AngleK6  / 180.0 * M_PI * 65 / 12;
+
+		if(-1<speedF4 && speedF4<1 && posF3<(AngleH6+tolerance/3)){
+			heelSwitchRight=1;
+		}
+	}
 
 
 
