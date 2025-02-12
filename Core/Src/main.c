@@ -28,6 +28,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
+#include "mpu6050_it.h"
 
 
 /* USER CODE END Includes */
@@ -48,6 +49,9 @@
 
 /* Private variables ---------------------------------------------------------*/
 CAN_HandleTypeDef hcan1;
+
+I2C_HandleTypeDef hi2c1;
+I2C_HandleTypeDef hi2c2;
 
 TIM_HandleTypeDef htim6;
 
@@ -74,6 +78,8 @@ static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_CAN1_Init(void);
 static void MX_TIM6_Init(void);
+static void MX_I2C1_Init(void);
+static void MX_I2C2_Init(void);
 /* USER CODE BEGIN PFP */
 void CAN1_Tx_motor_on(int);
 void CAN1_Tx_motor_zero(int);
@@ -223,6 +229,18 @@ float ttime2 = 0;
 
 
 
+float x_ms2_R;
+float y_ms2_R;
+float z_ms2_R;
+
+float x_ms2_L;
+float y_ms2_L;
+float z_ms2_L;
+
+
+
+
+
 //********************************************************************************
 
 float saturate(float x, float x_min, float x_max) {
@@ -286,6 +304,8 @@ int main(void)
   MX_USART2_UART_Init();
   MX_CAN1_Init();
   MX_TIM6_Init();
+  MX_I2C1_Init();
+  MX_I2C2_Init();
   /* USER CODE BEGIN 2 */
 	if (HAL_CAN_Start(&hcan1) != HAL_OK) //CAN is started and checked for error.
 			{
@@ -328,8 +348,15 @@ int main(void)
 	sprintf(msg, "Motor 4 Initialized!\r\n");
 	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
+
+	Right_mpu6050_init_IT();
+	Left_mpu6050_init_IT();
+
+
 	// Start timer
 	HAL_TIM_Base_Start_IT(&htim6);
+
+
 
 //	cycle = 0;
 
@@ -444,6 +471,102 @@ static void MX_CAN1_Init(void)
 		Error_Handler();
 	}
   /* USER CODE END CAN1_Init 2 */
+
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.Timing = 0x10909CEC;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c1, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
+}
+
+/**
+  * @brief I2C2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C2_Init(void)
+{
+
+  /* USER CODE BEGIN I2C2_Init 0 */
+
+  /* USER CODE END I2C2_Init 0 */
+
+  /* USER CODE BEGIN I2C2_Init 1 */
+
+  /* USER CODE END I2C2_Init 1 */
+  hi2c2.Instance = I2C2;
+  hi2c2.Init.Timing = 0x10909CEC;
+  hi2c2.Init.OwnAddress1 = 0;
+  hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c2.Init.OwnAddress2 = 0;
+  hi2c2.Init.OwnAddress2Masks = I2C_OA2_NOMASK;
+  hi2c2.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c2.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Analogue filter
+  */
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c2, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Configure Digital filter
+  */
+  if (HAL_I2CEx_ConfigDigitalFilter(&hi2c2, 0) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C2_Init 2 */
+
+  /* USER CODE END I2C2_Init 2 */
 
 }
 
@@ -864,10 +987,8 @@ double AngleH2 = -5;
 double AngleK2 = 10;
 double AngleH3 = -15;
 double AngleK3 = 10;
-double AngleH4 = 40;
+double AngleH4 = 30;
 double AngleK4 = 50;
-double AngleH5 = 30;
-double AngleK5 = 50;
 
 
 double tolerance=5;
@@ -887,18 +1008,11 @@ double KpH3=3;
 double KdH3=0.5;
 double KpK3=3;
 double KdK3=0.2;
-//3.5 Middle swing
+//4     Swing Flexion
 double KpH4=2;
 double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
-//4     Swing Flexion
-double KpH5=2;
-double KdH5=0.2;
-double KpK5=3;
-double KdK5=0.2;
-
-
 
 int skipForDelay=80;
 int skippedRight=0;
@@ -908,14 +1022,27 @@ int skippedLeft=0;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
-//	ttime = cycle * samplingTime * 1e-3;
-//	cycle=cycle+1;
 
 
-	char msg[50];
-	sprintf(msg, "%d,%d\r\n",
-	        heelSwitchLeft, heelSwitchRight);
-	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+
+    // Only trigger a new read if the I2C bus is ready
+    if (HAL_I2C_GetState(&hi2c1) == HAL_I2C_STATE_READY)
+    {
+        Right_mpu6050_read_IT();
+    }
+    if (HAL_I2C_GetState(&hi2c2) == HAL_I2C_STATE_READY)
+    {
+        Left_mpu6050_read_IT();
+    }
+
+
+
+
+
+//	char msg[50];
+//	sprintf(msg, "%d,%d\r\n",
+//	        heelSwitchLeft, heelSwitchRight);
+//	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
 
 
 
@@ -929,7 +1056,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchRight==0 || (heelSwitchRight==1 && heelSwitchLeft>2)) {
+		if (heelSwitchRight==0 || (heelSwitchRight==1 && heelSwitchLeft==3)) {
 		heelSwitchRight=heelSwitchRight+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Right Triggered!" );
@@ -947,7 +1074,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchLeft==0 || (heelSwitchLeft==1 && heelSwitchRight>2)) {
+		if (heelSwitchLeft==0 || (heelSwitchLeft==1 && heelSwitchRight==3)) {
 		heelSwitchLeft=heelSwitchLeft+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Left Triggered!" );
@@ -1010,16 +1137,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			heelSwitchLeft=5;
 		}
 	}
-
-	// Delay state
 	else if (heelSwitchLeft==5) {
 		if (skippedLeft<skipForDelay){
 			skippedLeft++;
 		}else{
-			heelSwitchLeft=6;
+			heelSwitchLeft=4;
 			skippedLeft=0;
 		}
 	}
+
+
 
 	// Swing Flexion
 	else if (heelSwitchLeft==4) {
@@ -1033,32 +1160,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH4 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF2 && speedF2<1 && posF1>(AngleH4-tolerance)){
-			heelSwitchLeft=6;
-
-		}
-	}
-
-
-	// Swing Flexion
-	else if (heelSwitchLeft==6) {
-
-		Kp1=KpH5;
-		Kd1=KdH5;
-
-		Kp2=KpK5;
-		Kd2=KdK5;
-
-		rAngle1 = AngleH5 / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
-
-		if(-1<speedF2 && speedF2<1 && posF1>(AngleH5-tolerance)){
+		if(-1<speedF2 && speedF2<1 && posF2>(AngleK4-tolerance)){
 			heelSwitchLeft=1;
 
 		}
 	}
-
-
 
 
 
@@ -1130,13 +1236,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 			heelSwitchRight=5;
 		}
 	}
-
-	// Delay State
 	else if (heelSwitchRight==5) {
 		if (skippedRight<skipForDelay){
 			skippedRight++;
 		}else{
-			heelSwitchRight=6;
+			heelSwitchRight=4;
 			skippedRight=0;
 		}
 	}
@@ -1154,26 +1258,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle4 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
 		if(-1<speedF4 && speedF4<1 && posF4>(AngleH4-tolerance)){
-			heelSwitchRight=6;
-		}
-	}
-
-	// Swing Flexion
-	else if (heelSwitchRight==6) {
-
-		Kp3=KpH5;
-		Kd3=KdH5;
-
-		Kp4=KpK5;
-		Kd4=KdK5;
-
-		rAngle3 = AngleH5 / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
-
-		if(-1<speedF4 && speedF4<1 && posF3>(AngleH5-tolerance)){
 			heelSwitchRight=1;
 		}
 	}
+
 
 
 
@@ -1185,9 +1273,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 
+	  HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 
 
-	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 
 }
 
