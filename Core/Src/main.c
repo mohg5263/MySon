@@ -866,8 +866,8 @@ double AngleH3 = -15;
 double AngleK3 = 10;
 double AngleH4 = 40;
 double AngleK4 = 50;
-double AngleH6 = 30;
-double AngleK6 = 50;
+double AngleH5 = 30;
+double AngleK5 = 50;
 
 
 double tolerance=5;
@@ -888,15 +888,15 @@ double KdH3=0.5;
 double KpK3=3;
 double KdK3=0.2;
 //3.5 Middle swing
-double KpH6=2;
-double KdH6=0.2;
-double KpK6=3;
-double KdK6=0.2;
-//4     Swing Flexion
 double KpH4=2;
 double KdH4=0.2;
 double KpK4=3;
 double KdK4=0.2;
+//4     Swing Flexion
+double KpH5=2;
+double KdH5=0.2;
+double KpK5=3;
+double KdK5=0.2;
 
 
 
@@ -1016,7 +1016,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if (skippedLeft<skipForDelay){
 			skippedLeft++;
 		}else{
-			heelSwitchLeft=4;
+			heelSwitchLeft=6;
 			skippedLeft=0;
 		}
 	}
@@ -1033,7 +1033,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		rAngle1 = AngleH4 / 180.0 * M_PI * 65 / 12;
 		rAngle2 = AngleK4  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF2 && speedF2<1 && posF1>(AngleH6-tolerance)){
+		if(-1<speedF2 && speedF2<1 && posF1>(AngleH4-tolerance)){
 			heelSwitchLeft=6;
 
 		}
@@ -1043,16 +1043,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	// Swing Flexion
 	else if (heelSwitchLeft==6) {
 
-		Kp1=KpH6;
-		Kd1=KdH6;
+		Kp1=KpH5;
+		Kd1=KdH5;
 
-		Kp2=KpK6;
-		Kd2=KdK6;
+		Kp2=KpK5;
+		Kd2=KdK5;
 
-		rAngle1 = AngleH6 / 180.0 * M_PI * 65 / 12;
-		rAngle2 = AngleK6  / 180.0 * M_PI * 65 / 12;
+		rAngle1 = AngleH5 / 180.0 * M_PI * 65 / 12;
+		rAngle2 = AngleK5  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF2 && speedF2<1 && posF1<(AngleH6+tolerance/3)){
+		if(-1<speedF2 && speedF2<1 && posF1>(AngleH5-tolerance)){
 			heelSwitchLeft=1;
 
 		}
@@ -1136,7 +1136,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 		if (skippedRight<skipForDelay){
 			skippedRight++;
 		}else{
-			heelSwitchRight=4;
+			heelSwitchRight=6;
 			skippedRight=0;
 		}
 	}
@@ -1161,16 +1161,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 	// Swing Flexion
 	else if (heelSwitchRight==6) {
 
-		Kp3=KpH6;
-		Kd3=KdH6;
+		Kp3=KpH5;
+		Kd3=KdH5;
 
-		Kp4=KpK6;
-		Kd4=KdK6;
+		Kp4=KpK5;
+		Kd4=KdK5;
 
-		rAngle3 = AngleH6 / 180.0 * M_PI * 65 / 12;
-		rAngle4 = AngleK6  / 180.0 * M_PI * 65 / 12;
+		rAngle3 = AngleH5 / 180.0 * M_PI * 65 / 12;
+		rAngle4 = AngleK5  / 180.0 * M_PI * 65 / 12;
 
-		if(-1<speedF4 && speedF4<1 && posF3<(AngleH6+tolerance/3)){
+		if(-1<speedF4 && speedF4<1 && posF3>(AngleH5-tolerance)){
 			heelSwitchRight=1;
 		}
 	}
