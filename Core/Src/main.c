@@ -490,7 +490,7 @@ static void MX_I2C1_Init(void)
 
   /* USER CODE END I2C1_Init 1 */
   hi2c1.Instance = I2C1;
-  hi2c1.Init.Timing = 0x10909CEC;
+  hi2c1.Init.Timing = 0xF010F2FF;
   hi2c1.Init.OwnAddress1 = 0;
   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -538,7 +538,7 @@ static void MX_I2C2_Init(void)
 
   /* USER CODE END I2C2_Init 1 */
   hi2c2.Instance = I2C2;
-  hi2c2.Init.Timing = 0x10909CEC;
+  hi2c2.Init.Timing = 0xF030F2FD;
   hi2c2.Init.OwnAddress1 = 0;
   hi2c2.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
   hi2c2.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
@@ -1056,7 +1056,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateRight == GPIO_PIN_SET && lastButtonStateRight == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchRight==0 || (heelSwitchRight==1 && heelSwitchLeft==3)) {
+		if (heelSwitchRight==0 || heelSwitchRight==1) {
 		heelSwitchRight=heelSwitchRight+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Right Triggered!" );
@@ -1074,7 +1074,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 	if (buttonStateLeft == GPIO_PIN_SET && lastButtonStateLeft == GPIO_PIN_RESET) {
 		HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		if (heelSwitchLeft==0 || (heelSwitchLeft==1 && heelSwitchRight==3)) {
+		if (heelSwitchLeft==0 || heelSwitchLeft==1) {
 		heelSwitchLeft=heelSwitchLeft+1;
 		char msg[50];
 		sprintf(msg, "Heel Switch Left Triggered!" );
@@ -1232,10 +1232,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
 
 
 		///  Syncing solved
-		if(previous_heelSwitchLeft==1 && heelSwitchLeft==2){
+		if(previous_heelSwitchLeft==1 && heelSwitchLeft==2 || heelSwitchLeft==3){
 			heelSwitchRight=5;
 		}
 	}
+
+	//Delay state
 	else if (heelSwitchRight==5) {
 		if (skippedRight<skipForDelay){
 			skippedRight++;
