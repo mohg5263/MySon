@@ -150,10 +150,10 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 
         rightDataReady = 1;  // Indicate that new data is available
 
-        // (Optional) Notify via UART or set a flag for your main loop
-    	char msg[50];
-    	sprintf(msg, "Right: X = %.2f, Y = %.2f, Z = %.2f \r\n", x_ms2_R, y_ms2_R, z_ms2_R);
-    	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+//        // (Optional) Notify via UART or set a flag for your main loop
+//    	char msg[50];
+//    	sprintf(msg, "Right: X = %.2f, Y = %.2f, Z = %.2f \r\n", x_ms2_R, y_ms2_R, z_ms2_R);
+//    	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
     }
     else if (hi2c == &hi2c2)
     {
@@ -167,9 +167,9 @@ void HAL_I2C_MemRxCpltCallback(I2C_HandleTypeDef *hi2c)
 
         leftDataReady = 1;
 
-    	char msg[50];
-    	sprintf(msg, "Left: X = %.2f, Y = %.2f, Z = %.2f \r\n", x_ms2_L, y_ms2_L, z_ms2_L);
-    	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
+//    	char msg[50];
+//    	sprintf(msg, "Left: X = %.2f, Y = %.2f, Z = %.2f \r\n", x_ms2_L, y_ms2_L, z_ms2_L);
+//    	HAL_UART_Transmit(&huart2, (uint8_t*) msg, strlen(msg), HAL_MAX_DELAY);
     }
 }
 

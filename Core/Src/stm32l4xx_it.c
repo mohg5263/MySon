@@ -277,11 +277,11 @@ void I2C2_ER_IRQHandler(void)
 void EXTI15_10_IRQHandler(void)
 {
   /* USER CODE BEGIN EXTI15_10_IRQn 0 */
-
+//
   /* USER CODE END EXTI15_10_IRQn 0 */
   HAL_GPIO_EXTI_IRQHandler(B1_Pin);
   /* USER CODE BEGIN EXTI15_10_IRQn 1 */
-
+//
   /* USER CODE END EXTI15_10_IRQn 1 */
 }
 
@@ -301,4 +301,30 @@ void TIM6_DAC_IRQHandler(void)
 
 /* USER CODE BEGIN 1 */
 
+
+
+
+
+
+//void EXTI15_10_IRQHandler(void) {
+//    uint32_t currentTime = HAL_GetTick(); // Get system time in milliseconds
+//
+//    if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_10) != RESET) {
+//    	uint32_t timeDelay = currentTime - lastInterruptTimeRight;
+//        if (timeDelay > DEBOUNCE_DELAY_MS) {
+//            __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_10);
+//            handleRightButtonPress(timeDelay);
+//            lastInterruptTimeRight = currentTime;
+//        }
+//    }
+//
+//    if (__HAL_GPIO_EXTI_GET_IT(GPIO_PIN_11) != RESET) {
+//    	uint32_t timeDelay = currentTime - lastInterruptTimeLeft;
+//        if (timeDelay > DEBOUNCE_DELAY_MS) {
+//            __HAL_GPIO_EXTI_CLEAR_IT(GPIO_PIN_11);
+//            handleLeftButtonPress(timeDelay);
+//            lastInterruptTimeLeft = currentTime;
+//        }
+//    }
+//}
 /* USER CODE END 1 */
