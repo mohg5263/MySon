@@ -686,10 +686,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOC, GPIO_PIN_0, GPIO_PIN_RESET);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_6|GPIO_PIN_7, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|GPIO_PIN_6, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -697,22 +694,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PC0 */
-  GPIO_InitStruct.Pin = GPIO_PIN_0;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : LD2_Pin PA6 PA7 */
-  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_6|GPIO_PIN_7;
+  /*Configure GPIO pins : LD2_Pin PA6 */
+  GPIO_InitStruct.Pin = LD2_Pin|GPIO_PIN_6;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : PC10 PC11 PC12 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11|GPIO_PIN_12;
+  /*Configure GPIO pins : PC10 PC11 */
+  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_11;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
@@ -1046,7 +1036,6 @@ int skippedLeft=0;
 
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim) {
-    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
     update_control_params = 1;
     update_button = 1;
 }
@@ -1090,7 +1079,7 @@ void updateButtons(void){
 
 
 void updateControlParameters() {
-
+	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 
     switch (heelSwitchLeft) {
         // Swing Extension
@@ -1110,7 +1099,7 @@ void updateControlParameters() {
             Kd2 = KdK2;
             rAngle1 = AngleH2 * M_PI * 65 / (12 * 180.0);
             rAngle2 = AngleK2 * M_PI * 65 / (12 * 180.0);
-            if (-1 < speedF1 && speedF1 < 1 && posF1 < (AngleH2 + tolerance)) {
+            if (-3 < speedF1 && speedF1 < 3 && posF1 < (AngleH2 + tolerance)) {
                 heelSwitchLeft = 3;
             }
             break;
@@ -1122,7 +1111,7 @@ void updateControlParameters() {
             Kd2 = KdK3;
             rAngle1 = AngleH3 * M_PI * 65 / (12 * 180.0);
             rAngle2 = AngleK3 * M_PI * 65 / (12 * 180.0);
-            if (previous_heelSwitchRight == 1 && heelSwitchRight == 2) {
+            if (previous_heelSwitchRight == 1 && heelSwitchRight == 2 || heelSwitchRight == 3) {
                 heelSwitchLeft = 5;
             }
             break;
@@ -1180,7 +1169,7 @@ void updateControlParameters() {
             Kd4 = KdK2;
             rAngle3 = AngleH2 * M_PI * 65 / (12 * 180.0);
             rAngle4 = AngleK2 * M_PI * 65 / (12 * 180.0);
-            if (-1 < speedF3 && speedF3 < 1 && posF3 < (AngleH2 + tolerance)) {
+            if (-3 < speedF3 && speedF3 < 3 && posF3 < (AngleH2 + tolerance)) {
                 heelSwitchRight = 3;
             }
             break;
@@ -1191,7 +1180,7 @@ void updateControlParameters() {
             Kd4 = KdK3;
             rAngle3 = AngleH3 * M_PI * 65 / (12 * 180.0);
             rAngle4 = AngleK3 * M_PI * 65 / (12 * 180.0);
-            if (previous_heelSwitchLeft == 1 && heelSwitchLeft == 2) {
+            if (previous_heelSwitchLeft == 1 && heelSwitchLeft == 2 || heelSwitchLeft==3) {
                 heelSwitchRight = 5;
             }
             break;
@@ -1222,6 +1211,9 @@ void updateControlParameters() {
     signalMotors(rAngle1, rAngle2, rAngle3, rAngle4);
     previous_heelSwitchRight = heelSwitchRight;
     previous_heelSwitchLeft = heelSwitchLeft;
+
+
+    HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 }
 
 
