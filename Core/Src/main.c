@@ -382,6 +382,7 @@ int main(void)
 	      update_control_params = 0;
 	  }
 
+
 	  if (update_button) {
 		  updateButtons();
 		  update_button = 0;
@@ -906,7 +907,7 @@ double AngleH2 = -5;
 double AngleK2 = 10;
 double AngleH3 = -20;
 double AngleK3 = 10;
-double AngleH4 = 30;
+double AngleH4 = 40;
 double AngleK4 = 50;
 
 
