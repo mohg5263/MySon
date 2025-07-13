@@ -28,7 +28,6 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <math.h>
-#include "mpu6050_it.h"
 
 
 /* USER CODE END Includes */
@@ -37,7 +36,6 @@
 /* USER CODE BEGIN PTD */
 /* Global Variables */
 volatile uint8_t msg_ready = 0;
-volatile uint8_t i2c_read_request = 0;
 volatile uint8_t update_control_params = 0;
 volatile uint8_t update_button=0;
 volatile char uart_msg_buffer[50];
@@ -96,6 +94,9 @@ void Stop_Motors(int, int, int, int);
 void handleRightButtonPress();
 void handleLeftButtonPress();
 void updateControlParameters();
+void updateRamp(int motorIdx); // NEW: Prototype for updateRamp function
+
+
 
 // Prototype of the template function
 
@@ -229,14 +230,20 @@ float ttime2 = 0;
 
 
 
+#define RAMP_DURATION 100 // ms
 
-float x_ms2_R;
-float y_ms2_R;
-float z_ms2_R;
+// MODIFIED Ramp Struct for smooth transitions
+typedef struct {
+    float start;        // Starting value of the ramp
+    float target;       // Desired final value of the ramp
+    float current;      // Current value during the ramp
+    uint32_t startTime; // Tick count when the ramp started
+    uint8_t active;     // Flag to indicate if a ramp is in progress (using uint8_t as boolean)
+    uint32_t duration;  // Duration of the ramp in milliseconds
+} Ramp;
 
-float x_ms2_L;
-float y_ms2_L;
-float z_ms2_L;
+Ramp ramp[4]; // One for each rAngle1 to rAngle4
+
 
 
 
@@ -360,6 +367,19 @@ int main(void)
 
 
 
+
+	// MODIFIED: Initialize the ramps
+	for (int i = 0; i < 4; i++) {
+	    ramp[i].active = 0;     // Not active initially
+	    ramp[i].current = 0.0f; // Start at 0 radians (or your initial desired position)
+	    ramp[i].target = 0.0f;  // Target also 0 initially
+	    ramp[i].start = 0.0f;   // Start of ramp also 0
+	    ramp[i].startTime = 0;  // No start time yet
+	    ramp[i].duration = RAMP_DURATION; // Use the defined constant
+	}
+
+
+
 //	cycle = 0;
 
   /* USER CODE END 2 */
@@ -372,10 +392,7 @@ int main(void)
 
     /* USER CODE BEGIN 3 */
 
-//	  if (i2c_read_request) {
-//	      Right_mpu6050_read_IT();
-//	      i2c_read_request = 0;
-//	  }
+
 
 	  if (update_control_params) {
 	      updateControlParameters();
@@ -839,6 +856,8 @@ void CAN1_Rx_message_read(void) {
 }
 
 
+
+
 void signalMotors(float rAngle1, float rAngle2, float rAngle3, float rAngle4){
 
 	// Command motor 1 and read current CAN message
@@ -986,6 +1005,16 @@ void updateButtons(void){
 void updateControlParameters() {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 
+    // Define temporary variables for the calculated target angles (in radians for the motor)
+    float calculated_targetRAngle1, calculated_targetRAngle2,
+          calculated_targetRAngle3, calculated_targetRAngle4;
+
+    // A small threshold to determine if a new ramp should be initiated
+    // This prevents restarting a ramp if the target angle hasn't meaningfully changed
+    const float ANGLE_CHANGE_THRESHOLD = 0.005f; // Radians, approx 0.28 degrees
+
+
+
     switch (heelSwitchLeft) {
         // Swing Extension
         case 1:
@@ -1045,7 +1074,23 @@ void updateControlParameters() {
 
 
 
-
+    // Initiate/Update Ramp for Motor 1 (Left Hip)
+    // Check if the calculated target is significantly different or if the ramp is not active
+    if (fabs(ramp[0].target - rAngle1) > ANGLE_CHANGE_THRESHOLD || ramp[0].active == 0) {
+        ramp[0].start = ramp[0].current; // Start the ramp from the current position
+        ramp[0].target = rAngle1;
+        ramp[0].startTime = HAL_GetTick();
+        ramp[0].active = 1;
+        ramp[0].duration = RAMP_DURATION;
+    }
+    // Initiate/Update Ramp for Motor 2 (Left Knee)
+    if (fabs(ramp[1].target - rAngle2) > ANGLE_CHANGE_THRESHOLD || ramp[1].active == 0) {
+        ramp[1].start = ramp[1].current;
+        ramp[1].target = rAngle2;
+        ramp[1].startTime = HAL_GetTick();
+        ramp[1].active = 1;
+        ramp[1].duration = RAMP_DURATION;
+    }
 
 
 
@@ -1113,12 +1158,66 @@ void updateControlParameters() {
     }
 
 
+
+    // Initiate/Update Ramp for Motor 3 (Right Hip)
+	if (fabs(ramp[2].target - rAngle3) > ANGLE_CHANGE_THRESHOLD || ramp[2].active == 0) {
+		ramp[2].start = ramp[2].current;
+		ramp[2].target = rAngle3;
+		ramp[2].startTime = HAL_GetTick();
+		ramp[2].active = 1;
+		ramp[2].duration = RAMP_DURATION;
+	}
+	// Initiate/Update Ramp for Motor 4 (Right Knee)
+	if (fabs(ramp[3].target - rAngle4) > ANGLE_CHANGE_THRESHOLD || ramp[3].active == 0) {
+		ramp[3].start = ramp[3].current;
+		ramp[3].target = rAngle4;
+		ramp[3].startTime = HAL_GetTick();
+		ramp[3].active = 1;
+		ramp[3].duration = RAMP_DURATION;
+	}
+
+
+	// --- Apply Ramping ---
+	// Call updateRamp for each motor to smoothly change its current setpoint
+	updateRamp(0); // Motor 1 (Left Hip)
+	updateRamp(1); // Motor 2 (Left Knee)
+	updateRamp(2); // Motor 3 (Right Hip)
+	updateRamp(3); // Motor 4 (Right Knee)
+
+	// Assign the current ramped values to the global rAngle variables
+	// These are the actual setpoints sent to the motors
+	rAngle1 = ramp[0].current;
+	rAngle2 = ramp[1].current;
+	rAngle3 = ramp[2].current;
+	rAngle4 = ramp[3].current;
+
+
+
+
+
     signalMotors(rAngle1, rAngle2, rAngle3, rAngle4);
     previous_heelSwitchRight = heelSwitchRight;
     previous_heelSwitchLeft = heelSwitchLeft;
 
 
     HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
+}
+
+
+// NEW: Ramping function
+void updateRamp(int motorIdx) {
+    if (ramp[motorIdx].active) {
+        uint32_t elapsedTime = HAL_GetTick() - ramp[motorIdx].startTime;
+        float progress = (float)elapsedTime / (float)ramp[motorIdx].duration;
+
+        if (progress >= 1.0f) {
+            progress = 1.0f;
+            ramp[motorIdx].active = 0; // Ramp finished
+        }
+
+        // Linear interpolation: current = start + (target - start) * progress
+        ramp[motorIdx].current = ramp[motorIdx].start + (ramp[motorIdx].target - ramp[motorIdx].start) * progress;
+    }
 }
 
 
