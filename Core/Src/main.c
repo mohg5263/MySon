@@ -230,7 +230,7 @@ float ttime2 = 0;
 
 
 
-#define RAMP_DURATION 100 // ms
+uint32_t RAMP_DURATION = 100; // ms
 
 // MODIFIED Ramp Struct for smooth transitions
 typedef struct {
@@ -1006,8 +1006,7 @@ void updateControlParameters() {
 	HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_6);
 
     // Define temporary variables for the calculated target angles (in radians for the motor)
-    float calculated_targetRAngle1, calculated_targetRAngle2,
-          calculated_targetRAngle3, calculated_targetRAngle4;
+    float rAngle_tar1, rAngle_tar2, rAngle_tar3, rAngle_tar4;
 
     // A small threshold to determine if a new ramp should be initiated
     // This prevents restarting a ramp if the target angle hasn't meaningfully changed
@@ -1022,8 +1021,8 @@ void updateControlParameters() {
             Kd1 = KdH1;
             Kp2 = KpK1;
             Kd2 = KdK1;
-            rAngle1 = AngleH1 * M_PI * 65 / (12 * 180.0);
-            rAngle2 = AngleK1 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar1 = AngleH1 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar2 = AngleK1 * M_PI * 65 / (12 * 180.0);
             break;
         // Stance
         case 2:
@@ -1031,8 +1030,8 @@ void updateControlParameters() {
             Kd1 = KdH2;
             Kp2 = KpK2;
             Kd2 = KdK2;
-            rAngle1 = AngleH2 * M_PI * 65 / (12 * 180.0);
-            rAngle2 = AngleK2 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar1 = AngleH2 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar2 = AngleK2 * M_PI * 65 / (12 * 180.0);
             if (-3 < speedF1 && speedF1 < 3 && posF1 < (AngleH2 + tolerance)) {
                 heelSwitchLeft = 3;
             }
@@ -1043,8 +1042,8 @@ void updateControlParameters() {
             Kd1 = KdH3;
             Kp2 = KpK3;
             Kd2 = KdK3;
-            rAngle1 = AngleH3 * M_PI * 65 / (12 * 180.0);
-            rAngle2 = AngleK3 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar1 = AngleH3 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar2 = AngleK3 * M_PI * 65 / (12 * 180.0);
             if (previous_heelSwitchRight == 1 && heelSwitchRight == 2 || heelSwitchRight == 3) {
                 heelSwitchLeft = 5;
             }
@@ -1064,8 +1063,8 @@ void updateControlParameters() {
             Kd1 = KdH4;
             Kp2 = KpK4;
             Kd2 = KdK4;
-            rAngle1 = AngleH4 * M_PI * 65 / (12 * 180.0);
-            rAngle2 = AngleK4 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar1 = AngleH4 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar2 = AngleK4 * M_PI * 65 / (12 * 180.0);
             if (-1 < speedF2 && speedF2 < 1 && posF2 > (AngleK4 - tolerance)) {
                 heelSwitchLeft = 1;
             }
@@ -1076,17 +1075,17 @@ void updateControlParameters() {
 
     // Initiate/Update Ramp for Motor 1 (Left Hip)
     // Check if the calculated target is significantly different or if the ramp is not active
-    if (fabs(ramp[0].target - rAngle1) > ANGLE_CHANGE_THRESHOLD || ramp[0].active == 0) {
+    if (fabs(ramp[0].target - rAngle_tar1) > ANGLE_CHANGE_THRESHOLD && ramp[0].active == 0) {
         ramp[0].start = ramp[0].current; // Start the ramp from the current position
-        ramp[0].target = rAngle1;
+        ramp[0].target = rAngle_tar1;
         ramp[0].startTime = HAL_GetTick();
         ramp[0].active = 1;
         ramp[0].duration = RAMP_DURATION;
     }
     // Initiate/Update Ramp for Motor 2 (Left Knee)
-    if (fabs(ramp[1].target - rAngle2) > ANGLE_CHANGE_THRESHOLD || ramp[1].active == 0) {
+    if (fabs(ramp[1].target - rAngle_tar2) > ANGLE_CHANGE_THRESHOLD && ramp[1].active == 0) {
         ramp[1].start = ramp[1].current;
-        ramp[1].target = rAngle2;
+        ramp[1].target = rAngle_tar2;
         ramp[1].startTime = HAL_GetTick();
         ramp[1].active = 1;
         ramp[1].duration = RAMP_DURATION;
@@ -1101,24 +1100,24 @@ void updateControlParameters() {
             Kd3 = KdH1;
             Kp4 = KpK1;
             Kd4 = KdK1;
-            rAngle3 = 0;
-            rAngle4 = 0;
+            rAngle_tar3 = 0;
+            rAngle_tar4 = 0;
             break;
         case 1:
             Kp3 = KpH1;
             Kd3 = KdH1;
             Kp4 = KpK1;
             Kd4 = KdK1;
-            rAngle3 = AngleH1 * M_PI * 65 / (12 * 180.0);
-            rAngle4 = AngleK1 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar3 = AngleH1 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar4 = AngleK1 * M_PI * 65 / (12 * 180.0);
             break;
         case 2:
             Kp3 = KpH2;
             Kd3 = KdH2;
             Kp4 = KpK2;
             Kd4 = KdK2;
-            rAngle3 = AngleH2 * M_PI * 65 / (12 * 180.0);
-            rAngle4 = AngleK2 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar3 = AngleH2 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar4 = AngleK2 * M_PI * 65 / (12 * 180.0);
             if (-3 < speedF3 && speedF3 < 3 && posF3 < (AngleH2 + tolerance)) {
                 heelSwitchRight = 3;
             }
@@ -1128,8 +1127,8 @@ void updateControlParameters() {
             Kd3 = KdH3;
             Kp4 = KpK3;
             Kd4 = KdK3;
-            rAngle3 = AngleH3 * M_PI * 65 / (12 * 180.0);
-            rAngle4 = AngleK3 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar3 = AngleH3 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar4 = AngleK3 * M_PI * 65 / (12 * 180.0);
             if (previous_heelSwitchLeft == 1 && heelSwitchLeft == 2 || heelSwitchLeft==3) {
                 heelSwitchRight = 5;
             }
@@ -1149,8 +1148,8 @@ void updateControlParameters() {
             Kd3 = KdH4;
             Kp4 = KpK4;
             Kd4 = KdK4;
-            rAngle3 = AngleH4 * M_PI * 65 / (12 * 180.0);
-            rAngle4 = AngleK4 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar3 = AngleH4 * M_PI * 65 / (12 * 180.0);
+            rAngle_tar4 = AngleK4 * M_PI * 65 / (12 * 180.0);
             if (-1 < speedF4 && speedF4 < 1 && posF4 > (AngleH4 - tolerance)) {
                 heelSwitchRight = 1;
             }
@@ -1160,17 +1159,17 @@ void updateControlParameters() {
 
 
     // Initiate/Update Ramp for Motor 3 (Right Hip)
-	if (fabs(ramp[2].target - rAngle3) > ANGLE_CHANGE_THRESHOLD || ramp[2].active == 0) {
+	if (fabs(ramp[2].target - rAngle_tar3) > ANGLE_CHANGE_THRESHOLD && ramp[2].active == 0) {
 		ramp[2].start = ramp[2].current;
-		ramp[2].target = rAngle3;
+		ramp[2].target = rAngle_tar3;
 		ramp[2].startTime = HAL_GetTick();
 		ramp[2].active = 1;
 		ramp[2].duration = RAMP_DURATION;
 	}
 	// Initiate/Update Ramp for Motor 4 (Right Knee)
-	if (fabs(ramp[3].target - rAngle4) > ANGLE_CHANGE_THRESHOLD || ramp[3].active == 0) {
+	if (fabs(ramp[3].target - rAngle_tar4) > ANGLE_CHANGE_THRESHOLD && ramp[3].active == 0) {
 		ramp[3].start = ramp[3].current;
-		ramp[3].target = rAngle4;
+		ramp[3].target = rAngle_tar4;
 		ramp[3].startTime = HAL_GetTick();
 		ramp[3].active = 1;
 		ramp[3].duration = RAMP_DURATION;
