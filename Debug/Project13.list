@@ -4872,7 +4872,7 @@ void updateControlParameters() {
  8002c68:	681b      	ldr	r3, [r3, #0]
  8002c6a:	4a22      	ldr	r2, [pc, #136]	@ (8002cf4 <updateControlParameters+0xc2c>)
  8002c6c:	65d3      	str	r3, [r2, #92]	@ 0x5c
-	}
+
 
 
 	// --- Apply Ramping ---

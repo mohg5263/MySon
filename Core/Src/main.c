@@ -230,7 +230,7 @@ float ttime2 = 0;
 
 
 
-uint32_t RAMP_DURATION = 100; // ms
+uint32_t RAMP_DURATION = 200; // ms
 
 // MODIFIED Ramp Struct for smooth transitions
 typedef struct {
@@ -921,7 +921,7 @@ double hipFactorKd1=1;
 
 
 double AngleH1 = 15;
-double AngleK1 = -5;
+double AngleK1 = 5;
 double AngleH2 = -5;
 double AngleK2 = 10;
 double AngleH3 = -20;
@@ -933,24 +933,24 @@ double AngleK4 = 50;
 double tolerance=5;
 
 //1      Swing Extension
-double KpH1=2;
+double KpH1=3;
 double KdH1=0.3;
-double KpK1=2;
+double KpK1=3;
 double KdK1=0.3;
 //2     Stance Flexion/Extension
-double KpH2=2;
+double KpH2=2.5;
 double KdH2=0.3;
-double KpK2=0.8;
+double KpK2=2.5;
 double KdK2=0.3;
 //3     Pre-Swing
-double KpH3=3;
+double KpH3=3.5;
 double KdH3=0.5;
-double KpK3=3;
+double KpK3=3.5;
 double KdK3=0.2;
 //4     Swing Flexion
-double KpH4=3;
+double KpH4=3.5;
 double KdH4=0.2;
-double KpK4=3;
+double KpK4=3.5;
 double KdK4=0.2;
 
 int skipForDelay=80;
@@ -1174,6 +1174,8 @@ void updateControlParameters() {
 		ramp[3].active = 1;
 		ramp[3].duration = RAMP_DURATION;
 	}
+
+
 
 
 	// --- Apply Ramping ---
