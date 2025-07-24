@@ -230,7 +230,7 @@ float ttime2 = 0;
 
 
 
-uint32_t RAMP_DURATION = 100; // ms
+uint32_t RAMP_DURATION = 40; // ms
 
 // MODIFIED Ramp Struct for smooth transitions
 typedef struct {
@@ -920,7 +920,7 @@ double hipFactorKp1=1;
 double hipFactorKd1=1;
 
 
-double AngleH1 = 15;
+double AngleH1 = 20;
 double AngleK1 = 5;
 double AngleH2 = -5;
 double AngleK2 = 10;
@@ -953,7 +953,7 @@ double KdH4=0.2;
 double KpK4=3.5;
 double KdK4=0.2;
 
-int skipForDelay=80;
+int skipForDelay=40;
 int skippedRight=0;
 int skippedLeft=0;
 
